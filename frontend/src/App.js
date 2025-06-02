@@ -120,7 +120,7 @@ const App = () => {
         className="w-16 h-16 mb-3 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 filter grayscale hover:grayscale-0"
         style={{
           background: isDarkMode ? '#23232a' : '#f3f4f6',
-          border: `1px solid ${palette.accent}`,
+          border:'none',
           boxShadow: isDarkMode ? '0 2px 8px #18181b44' : '0 2px 8px #e0e1e144'
         }}
       >
@@ -521,9 +521,12 @@ const App = () => {
             {typedText}
             <span className="animate-pulse">|</span>
           </h1>
-          <p className="text-2xl md:text-3xl font-extralight mb-16 tracking-wide" style={{color: palette.primary}}>
-            Nice to meet you.
-          </p>
+          {/* Show the message only after typing animation is complete */}
+          {typingComplete && (
+            <p className="text-2xl md:text-3xl font-extralight mb-16 tracking-wide" style={{color: palette.primary}}>
+              Nice to meet you.
+            </p>
+          )}
         </div>
 
         {showModeSelection && (
@@ -582,14 +585,16 @@ const App = () => {
               <select 
                 value={currentMode} 
                 onChange={(e) => setCurrentMode(e.target.value)}
-                className="text-sm font-light border rounded px-2 py-1 focus:outline-none cursor-pointer transition-colors duration-200"
+                className="text-sm font-light border-none rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200"
                 style={{
                   color: palette.text,
                   backgroundColor: isDarkMode ? palette.surface : '#fff',
-                  borderColor: isDarkMode ? palette.primary : '#ccc',
                   boxShadow: isDarkMode ? '0 2px 8px #0004' : '0 2px 8px #0001',
-                  minWidth: 200, // increased from 150
-                  paddingRight: 32 // extra space for dropdown arrow
+                  minWidth: 200,
+                  paddingRight: 32,
+                  // Custom focus border using palette
+                  '--tw-ring-color': isDarkMode ? palette.primary : palette.primary,
+                  '--tw-ring-offset-color': isDarkMode ? palette.surface : '#fff'
                 }}
               >
                 <option value="recruiter" style={{background: isDarkMode ? palette.surface : '#fff', color: palette.text}}>👔 Recruiter Mode</option>
