@@ -5,6 +5,31 @@ const App = () => {
   const [isVisible, setIsVisible] = useState({});
   const [activeSection, setActiveSection] = useState('home');
   const [selectedProject, setSelectedProject] = useState(null);
+  const [typingComplete, setTypingComplete] = useState(false);
+  const [showModeSelection, setShowModeSelection] = useState(false);
+  const [currentMode, setCurrentMode] = useState(null);
+  const [typedText, setTypedText] = useState('');
+
+  const fullText = "Hi, I'm Yugor Paulo.";
+
+  // Typing animation effect
+  useEffect(() => {
+    if (currentMode) return; // Don't run if mode is already selected
+    
+    let currentIndex = 0;
+    const typingInterval = setInterval(() => {
+      if (currentIndex <= fullText.length) {
+        setTypedText(fullText.slice(0, currentIndex));
+        currentIndex++;
+      } else {
+        clearInterval(typingInterval);
+        setTypingComplete(true);
+        setTimeout(() => setShowModeSelection(true), 1000);
+      }
+    }, 100);
+
+    return () => clearInterval(typingInterval);
+  }, [currentMode]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,16 +54,48 @@ const App = () => {
       });
     };
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
+    if (currentMode) {
+      window.addEventListener('scroll', handleScroll);
+      handleScroll();
+    }
+    
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [currentMode]);
 
   const scrollToSection = (sectionId) => {
     document.getElementById(sectionId)?.scrollIntoView({ 
       behavior: 'smooth' 
     });
   };
+
+  const handleModeSelection = (mode) => {
+    setCurrentMode(mode);
+    setShowModeSelection(false);
+  };
+
+  const getColorPalette = () => {
+    if (currentMode === 'recruiter') {
+      return {
+        primary: '#667eea',
+        secondary: '#764ba2',
+        accent: '#f093fb',
+        text: '#4a5568',
+        background: '#f7fafc',
+        surface: '#ffffff'
+      };
+    }
+    // Developer and Guest modes use the specified colors
+    return {
+      primary: '#657a7c',
+      secondary: '#657348', 
+      accent: '#99a292',
+      text: '#2f3d50',
+      background: '#e0e1e1',
+      surface: '#ffffff'
+    };
+  };
+
+  const palette = getColorPalette();
 
   // SVG Icons for technologies
   const TechIcon = ({ name, children }) => (
@@ -172,63 +229,116 @@ const App = () => {
     }
   ];
 
-  const projects = [
-    {
-      id: 1,
-      title: 'E-Commerce API Platform',
-      shortDescription: 'Scalable REST API with Django REST Framework, JWT authentication, and payment processing.',
-      fullDescription: 'A comprehensive e-commerce backend system built to handle high-traffic scenarios with robust security and performance optimization.',
-      implementation: {
-        overview: 'Built a full-featured e-commerce API using Django REST Framework with microservices architecture.',
-        keyFeatures: [
-          'JWT-based authentication and authorization system',
-          'RESTful API endpoints for products, orders, and user management',
-          'Integrated Stripe payment processing with webhook handling',
-          'Redis caching for improved performance and session management',
-          'Celery task queue for background job processing',
-          'PostgreSQL database with optimized queries and indexing'
-        ],
-        technicalChallenges: [
-          'Implemented rate limiting and API throttling for security',
-          'Created automated testing suite with 95% code coverage',
-          'Set up CI/CD pipeline with Docker containers',
-          'Designed scalable database schema with proper relationships'
-        ],
-        deployment: 'Deployed using Docker containers on AWS EC2 with load balancing and auto-scaling capabilities.'
+  const getProjectsForMode = () => {
+    const baseProjects = [
+      {
+        id: 1,
+        title: 'E-Commerce API Platform',
+        shortDescription: currentMode === 'developer' 
+          ? 'Scalable REST API built with Django REST Framework, featuring JWT authentication, payment processing, and microservices architecture designed for high-traffic scenarios.'
+          : 'Scalable REST API with Django REST Framework, JWT authentication, and payment processing.',
+        fullDescription: 'A comprehensive e-commerce backend system built to handle high-traffic scenarios with robust security and performance optimization.',
+        implementation: {
+          overview: currentMode === 'developer' 
+            ? 'Built a full-featured e-commerce API using Django REST Framework with microservices architecture. The system was designed with scalability in mind, implementing domain-driven design principles and following SOLID principles. The API follows RESTful conventions and includes comprehensive OpenAPI documentation.'
+            : 'Built a full-featured e-commerce API using Django REST Framework with microservices architecture.',
+          keyFeatures: [
+            'JWT-based authentication and authorization system with refresh token rotation',
+            'RESTful API endpoints for products, orders, users, and inventory management',
+            'Integrated Stripe payment processing with comprehensive webhook handling',
+            'Redis caching layer for improved performance and session management',
+            'Celery distributed task queue for background job processing',
+            'PostgreSQL database with optimized queries, proper indexing, and query analysis',
+            ...(currentMode === 'developer' ? [
+              'Custom middleware for request/response logging and monitoring',
+              'Rate limiting implementation using Redis and sliding window algorithm',
+              'Database connection pooling and query optimization techniques',
+              'Comprehensive error handling with custom exception classes',
+              'API versioning strategy with backward compatibility support'
+            ] : [])
+          ],
+          technicalChallenges: [
+            'Implemented advanced rate limiting and API throttling for DDoS protection',
+            'Created comprehensive testing suite with 95% code coverage using pytest',
+            'Set up CI/CD pipeline with Docker containers and automated deployment',
+            'Designed scalable database schema with proper relationships and normalization',
+            ...(currentMode === 'developer' ? [
+              'Solved N+1 query problems using select_related and prefetch_related',
+              'Implemented database query optimization reducing response time by 60%',
+              'Created custom Django management commands for data migration',
+              'Built monitoring and alerting system using Prometheus and Grafana',
+              'Handled concurrent transaction issues using database-level locking'
+            ] : [])
+          ],
+          deployment: currentMode === 'developer' 
+            ? 'Deployed using Docker containers on AWS EC2 with Application Load Balancer, auto-scaling groups, and RDS for database. Implemented blue-green deployment strategy with zero downtime. Used CloudFormation for infrastructure as code and implemented comprehensive monitoring with CloudWatch metrics and alerts.'
+            : 'Deployed using Docker containers on AWS EC2 with load balancing and auto-scaling capabilities.'
+        },
+        technologies: ['Python', 'Django', 'PostgreSQL', 'Redis', 'Docker', 'AWS'],
+        image: 'https://images.pexels.com/photos/2061168/pexels-photo-2061168.jpeg',
+        github: 'https://github.com/yugorpaulo/ecommerce-api',
+        demo: 'https://api.yugorpaulo.dev/docs'
       },
-      technologies: ['Python', 'Django', 'PostgreSQL', 'Redis', 'Docker', 'AWS'],
-      image: 'https://images.pexels.com/photos/2061168/pexels-photo-2061168.jpeg',
-      github: 'https://github.com/yugorpaulo/ecommerce-api',
-      demo: 'https://api.yugorpaulo.dev/docs'
-    },
-    {
-      id: 2,
-      title: 'Bioengineering Data Analytics Platform',
-      shortDescription: 'Real-time analytics platform for bioengineering data using Flask, Oracle DB, and statistical modeling.',
-      fullDescription: 'A sophisticated data analytics platform designed for bioengineering research, leveraging my Stanford Data Science certification.',
-      implementation: {
-        overview: 'Developed a comprehensive analytics platform for processing and analyzing bioengineering datasets using statistical methods learned from Stanford certification.',
-        keyFeatures: [
-          'Real-time data processing pipeline with Flask and Oracle DB',
-          'Statistical analysis modules using Python scientific libraries',
-          'Interactive data visualizations with Plotly and D3.js',
-          'Machine learning models for predictive bioengineering insights',
-          'Automated report generation with statistical significance testing',
-          'RESTful API for data ingestion and retrieval'
-        ],
-        technicalChallenges: [
-          'Implemented complex statistical algorithms for bioengineering data',
-          'Optimized Oracle database queries for large-scale dataset processing',
-          'Created data validation and cleaning pipelines',
-          'Built responsive dashboard with real-time updates using WebSockets'
-        ],
-        deployment: 'Containerized with Docker and deployed on Kubernetes cluster with horizontal scaling for handling large datasets.'
-      },
-      technologies: ['Python', 'Flask', 'Oracle', 'Pandas', 'NumPy', 'Plotly', 'Kubernetes'],
-      image: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
-      github: 'https://github.com/yugorpaulo/bioeng-analytics',
-      demo: 'https://bioanalytics.yugorpaulo.dev'
-    }
+      {
+        id: 2,
+        title: 'Bioengineering Data Analytics Platform',
+        shortDescription: currentMode === 'developer'
+          ? 'Real-time analytics platform for bioengineering data utilizing Flask, Oracle DB, advanced statistical modeling, and machine learning algorithms for predictive insights.'
+          : 'Real-time analytics platform for bioengineering data using Flask, Oracle DB, and statistical modeling.',
+        fullDescription: 'A sophisticated data analytics platform designed for bioengineering research, leveraging my Stanford Data Science certification.',
+        implementation: {
+          overview: currentMode === 'developer'
+            ? 'Developed a comprehensive analytics platform for processing and analyzing bioengineering datasets using advanced statistical methods and machine learning algorithms learned from Stanford certification. The platform processes large-scale biological datasets, performs complex statistical analysis, and provides real-time insights through interactive visualizations.'
+            : 'Developed a comprehensive analytics platform for processing and analyzing bioengineering datasets using statistical methods learned from Stanford certification.',
+          keyFeatures: [
+            'Real-time data processing pipeline with Flask and Oracle database',
+            'Statistical analysis modules using Python scientific libraries (NumPy, SciPy, Pandas)',
+            'Interactive data visualizations with Plotly, D3.js, and custom charting components',
+            'Machine learning models for predictive bioengineering insights using scikit-learn',
+            'Automated report generation with statistical significance testing',
+            'RESTful API for data ingestion, processing, and retrieval',
+            ...(currentMode === 'developer' ? [
+              'Custom ETL pipelines for processing multi-format bioengineering data',
+              'Implementation of statistical algorithms including ANOVA, regression analysis, and time-series forecasting',
+              'Real-time data streaming using WebSockets for live dashboard updates',
+              'Advanced data validation and quality assurance pipelines',
+              'Custom machine learning pipeline with feature engineering and model selection'
+            ] : [])
+          ],
+          technicalChallenges: [
+            'Implemented complex statistical algorithms for bioengineering data analysis',
+            'Optimized Oracle database queries for large-scale dataset processing',
+            'Created robust data validation and cleaning pipelines',
+            'Built responsive dashboard with real-time updates using WebSockets',
+            ...(currentMode === 'developer' ? [
+              'Solved memory optimization issues when processing datasets exceeding 100GB',
+              'Implemented parallel processing using multiprocessing and concurrent.futures',
+              'Created custom Oracle stored procedures for complex aggregation queries',
+              'Built fault-tolerant data pipeline with automatic error recovery',
+              'Optimized statistical computations reducing processing time by 75%'
+            ] : [])
+          ],
+          deployment: currentMode === 'developer'
+            ? 'Containerized with Docker and deployed on Kubernetes cluster with horizontal pod autoscaling for handling variable workloads. Implemented service mesh architecture using Istio for traffic management. Used Helm charts for application deployment and configured persistent volumes for data storage. Set up monitoring with ELK stack and implemented automated backup strategies.'
+            : 'Containerized with Docker and deployed on Kubernetes cluster with horizontal scaling for handling large datasets.'
+        },
+        technologies: ['Python', 'Flask', 'Oracle', 'Pandas', 'NumPy', 'Plotly', 'Kubernetes'],
+        image: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
+        github: 'https://github.com/yugorpaulo/bioeng-analytics',
+        demo: 'https://bioanalytics.yugorpaulo.dev'
+      }
+    ];
+
+    return baseProjects;
+  };
+
+  const getSoftSkills = () => [
+    { name: 'Problem Solving', description: 'Analytical thinking and systematic approach to complex challenges' },
+    { name: 'Team Collaboration', description: 'Effective communication and coordination in cross-functional teams' },
+    { name: 'Adaptability', description: 'Quick learning and adaptation to new technologies and methodologies' },
+    { name: 'Time Management', description: 'Efficient project planning and deadline management' },
+    { name: 'Critical Thinking', description: 'Data-driven decision making and logical analysis' },
+    { name: 'Communication', description: 'Clear technical documentation and stakeholder presentation' }
   ];
 
   const certifications = [
@@ -248,7 +358,7 @@ const App = () => {
         <div className="bg-white rounded-none max-w-5xl max-h-[90vh] overflow-y-auto shadow-2xl">
           <div className="sticky top-0 bg-white p-8 border-b border-gray-100 flex justify-between items-start">
             <div>
-              <h2 className="text-3xl font-light text-gray-900 mb-2">{project.title}</h2>
+              <h2 className="text-3xl font-light mb-2" style={{color: palette.text}}>{project.title}</h2>
               <p className="text-gray-500 font-light">{project.shortDescription}</p>
             </div>
             <button 
@@ -268,17 +378,17 @@ const App = () => {
             
             <div className="space-y-8">
               <div>
-                <h3 className="text-xl font-light text-gray-900 mb-4 border-b border-gray-100 pb-2">Overview</h3>
+                <h3 className="text-xl font-light mb-4 border-b border-gray-100 pb-2" style={{color: palette.text}}>Overview</h3>
                 <p className="text-gray-600 leading-relaxed font-light">{project.fullDescription}</p>
               </div>
 
               <div>
-                <h3 className="text-xl font-light text-gray-900 mb-4 border-b border-gray-100 pb-2">Implementation</h3>
+                <h3 className="text-xl font-light mb-4 border-b border-gray-100 pb-2" style={{color: palette.text}}>Implementation</h3>
                 <p className="text-gray-600 mb-6 font-light">{project.implementation.overview}</p>
                 
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Key Features</h4>
+                    <h4 className="font-medium mb-3" style={{color: palette.text}}>Key Features</h4>
                     <ul className="space-y-2 text-gray-600 font-light">
                       {project.implementation.keyFeatures.map((feature, index) => (
                         <li key={index} className="flex items-start">
@@ -290,7 +400,7 @@ const App = () => {
                   </div>
 
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Technical Challenges</h4>
+                    <h4 className="font-medium mb-3" style={{color: palette.text}}>Technical Challenges</h4>
                     <ul className="space-y-2 text-gray-600 font-light">
                       {project.implementation.technicalChallenges.map((challenge, index) => (
                         <li key={index} className="flex items-start">
@@ -303,18 +413,19 @@ const App = () => {
                 </div>
 
                 <div className="mt-8">
-                  <h4 className="font-medium text-gray-900 mb-3">Deployment</h4>
+                  <h4 className="font-medium mb-3" style={{color: palette.text}}>Deployment</h4>
                   <p className="text-gray-600 font-light">{project.implementation.deployment}</p>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-xl font-light text-gray-900 mb-4 border-b border-gray-100 pb-2">Technologies</h3>
+                <h3 className="text-xl font-light mb-4 border-b border-gray-100 pb-2" style={{color: palette.text}}>Technologies</h3>
                 <div className="flex flex-wrap gap-3">
                   {project.technologies.map((tech, index) => (
                     <span 
                       key={index}
-                      className="px-4 py-2 text-sm font-light text-gray-700 border border-gray-200 rounded-none hover:bg-gray-50 transition-colors"
+                      className="px-4 py-2 text-sm font-light border rounded-none hover:bg-gray-50 transition-colors"
+                      style={{color: palette.text, borderColor: palette.primary}}
                     >
                       {tech}
                     </span>
@@ -325,13 +436,15 @@ const App = () => {
               <div className="flex gap-6 pt-6">
                 <a 
                   href={project.github}
-                  className="px-8 py-3 text-sm font-light text-gray-900 border border-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300 rounded-none"
+                  className="px-8 py-3 text-sm font-light border hover:bg-gray-900 hover:text-white transition-all duration-300 rounded-none"
+                  style={{color: palette.text, borderColor: palette.text}}
                 >
                   View Source Code
                 </a>
                 <a 
                   href={project.demo}
-                  className="px-8 py-3 text-sm font-light text-white bg-gray-900 hover:bg-gray-700 transition-all duration-300 rounded-none"
+                  className="px-8 py-3 text-sm font-light text-white transition-all duration-300 rounded-none"
+                  style={{backgroundColor: palette.primary, ':hover': {backgroundColor: palette.secondary}}}
                 >
                   Live Demo
                 </a>
@@ -343,57 +456,146 @@ const App = () => {
     );
   };
 
+  const ModeSelector = () => (
+    <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: palette.background}}>
+      <div className="text-center max-w-2xl mx-auto px-8">
+        <div className="mb-16">
+          <h1 className="text-7xl md:text-9xl font-extralight mb-8 leading-none" style={{color: palette.text}}>
+            {typedText}
+            <span className="animate-pulse">|</span>
+          </h1>
+          <p className="text-2xl md:text-3xl font-extralight mb-16 tracking-wide" style={{color: palette.primary}}>
+            Nice to meet you.
+          </p>
+        </div>
+
+        {showModeSelection && (
+          <div className="space-y-8 animate-fade-in">
+            <p className="text-lg font-light mb-12" style={{color: palette.text}}>
+              I'd like to tailor your experience. You are a:
+            </p>
+            <div className="grid md:grid-cols-3 gap-6">
+              <button
+                onClick={() => handleModeSelection('recruiter')}
+                className="p-8 border border-gray-300 hover:border-purple-400 transition-all duration-300 group rounded-none"
+                style={{':hover': {borderColor: '#667eea'}}}
+              >
+                <div className="text-4xl mb-4">👔</div>
+                <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Recruiter</h3>
+                <p className="text-sm font-light text-gray-500">Focus on skills, experience, and achievements</p>
+              </button>
+              
+              <button
+                onClick={() => handleModeSelection('developer')}
+                className="p-8 border border-gray-300 transition-all duration-300 group rounded-none"
+                style={{borderColor: palette.primary, ':hover': {borderColor: palette.secondary}}}
+              >
+                <div className="text-4xl mb-4">💻</div>
+                <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Developer</h3>
+                <p className="text-sm font-light text-gray-500">Deep dive into technical implementations</p>
+              </button>
+              
+              <button
+                onClick={() => handleModeSelection('guest')}
+                className="p-8 border border-gray-300 transition-all duration-300 group rounded-none"
+                style={{borderColor: palette.primary, ':hover': {borderColor: palette.secondary}}}
+              >
+                <div className="text-4xl mb-4">👋</div>
+                <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Guest</h3>
+                <p className="text-sm font-light text-gray-500">General overview and resume access</p>
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  if (!currentMode) {
+    return <ModeSelector />;
+  }
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{backgroundColor: palette.background}}>
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-40 border-b border-gray-100">
+      <nav className="fixed top-0 w-full backdrop-blur-sm z-40 border-b" 
+           style={{backgroundColor: `${palette.surface}95`, borderColor: `${palette.primary}20`}}>
         <div className="max-w-7xl mx-auto px-8 py-6">
           <div className="flex justify-between items-center">
-            <div className="text-2xl font-light text-gray-900 tracking-wide">
-              Yugor Paulo
+            <div className="flex items-center space-x-4">
+              <select 
+                value={currentMode} 
+                onChange={(e) => setCurrentMode(e.target.value)}
+                className="text-sm font-light border-none bg-transparent focus:outline-none cursor-pointer"
+                style={{color: palette.text}}
+              >
+                <option value="recruiter">👔 Recruiter Mode</option>
+                <option value="developer">💻 Developer Mode</option>
+                <option value="guest">👋 Guest Mode</option>
+              </select>
             </div>
             <div className="hidden md:flex space-x-12">
-              {['home', 'about', 'skills', 'projects', 'contact'].map(section => (
-                <button
-                  key={section}
-                  onClick={() => scrollToSection(section)}
-                  className={`text-sm font-light uppercase tracking-wider transition-all duration-300 ${
-                    activeSection === section 
-                      ? 'text-gray-900 border-b border-gray-900' 
-                      : 'text-gray-500 hover:text-gray-900'
-                  }`}
-                >
-                  {section}
-                </button>
-              ))}
+              {['home', 'about', 'skills', 'projects', 'contact'].map(section => {
+                if (currentMode === 'guest' && section === 'skills') {
+                  return (
+                    <button
+                      key="resume"
+                      onClick={() => window.open('/resume.pdf', '_blank')}
+                      className="text-sm font-light uppercase tracking-wider transition-all duration-300"
+                      style={{color: palette.primary}}
+                    >
+                      Resume
+                    </button>
+                  );
+                }
+                return (
+                  <button
+                    key={section}
+                    onClick={() => scrollToSection(section)}
+                    className={`text-sm font-light uppercase tracking-wider transition-all duration-300 ${
+                      activeSection === section 
+                        ? 'border-b' 
+                        : 'hover:opacity-70'
+                    }`}
+                    style={{
+                      color: activeSection === section ? palette.text : palette.primary,
+                      borderColor: activeSection === section ? palette.text : 'transparent'
+                    }}
+                  >
+                    {section}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section id="home" className="min-h-screen flex items-center justify-center bg-white">
+      <section id="home" className="min-h-screen flex items-center justify-center" style={{backgroundColor: palette.surface}}>
         <div className="max-w-4xl mx-auto px-8 text-center">
           <div className={`transform transition-all duration-1000 ${
             isVisible.home ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
           }`}>
-            <h1 className="text-7xl md:text-9xl font-extralight text-gray-900 mb-8 leading-none">
-              Hi, I'm
+            <h1 className="text-7xl md:text-9xl font-extralight mb-8 leading-none" style={{color: palette.text}}>
+              {typedText}
             </h1>
-            <h1 className="text-7xl md:text-9xl font-light text-gray-900 mb-8 leading-none">
-              Yugor Paulo.
-            </h1>
-            <p className="text-2xl md:text-3xl font-extralight text-gray-600 mb-16 tracking-wide">
+            <p className="text-2xl md:text-3xl font-extralight mb-16 tracking-wide" style={{color: palette.primary}}>
               Nice to meet you.
             </p>
             
             <div className="space-y-8">
-              <p className="text-lg font-light text-gray-500 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-lg font-light max-w-2xl mx-auto leading-relaxed" style={{color: palette.text}}>
                 Backend Developer & Data Analyst specializing in Python, Django, and data-driven solutions
               </p>
               <button
                 onClick={() => scrollToSection('about')}
-                className="inline-block px-12 py-4 text-sm font-light text-gray-900 border border-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300 tracking-wider uppercase rounded-none"
+                className="inline-block px-12 py-4 text-sm font-light border transition-all duration-300 tracking-wider uppercase rounded-none"
+                style={{
+                  color: palette.text,
+                  borderColor: palette.text,
+                  ':hover': {backgroundColor: palette.text, color: palette.surface}
+                }}
               >
                 Explore Work
               </button>
@@ -403,67 +605,67 @@ const App = () => {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-32 bg-gray-50">
+      <section id="about" className="py-32" style={{backgroundColor: palette.background}}>
         <div className="max-w-6xl mx-auto px-8">
           <div className={`transform transition-all duration-1000 ${
             isVisible.about ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
           }`}>
-            <h2 className="text-5xl font-extralight text-gray-900 mb-20 text-center">
+            <h2 className="text-5xl font-extralight mb-20 text-center" style={{color: palette.text}}>
               About
             </h2>
             
             <div className="grid md:grid-cols-2 gap-20 items-start">
               <div className="space-y-8">
-                <p className="text-lg font-light text-gray-600 leading-relaxed">
+                <p className="text-lg font-light leading-relaxed" style={{color: palette.primary}}>
                   I'm a passionate junior backend developer and data analyst with expertise in 
                   Python, Django, Flask, and modern mobile development with Flutter. My work combines 
                   robust backend architecture with data-driven insights.
                 </p>
-                <p className="text-lg font-light text-gray-600 leading-relaxed">
+                <p className="text-lg font-light leading-relaxed" style={{color: palette.primary}}>
                   With a Stanford certification in Data Science for Bioengineering, I bring statistical 
                   rigor and analytical thinking to software development. I specialize in building scalable 
                   APIs, managing complex databases, and creating data analytics solutions.
                 </p>
 
                 <div className="grid grid-cols-1 gap-6 mt-12">
-                  <div className="border-l-2 border-gray-200 pl-6">
-                    <h4 className="font-light text-gray-900 mb-2">Backend Development</h4>
-                    <p className="text-gray-500 font-light text-sm">API Design, Database Optimization, DevOps</p>
+                  <div className="border-l-2 pl-6" style={{borderColor: palette.accent}}>
+                    <h4 className="font-light mb-2" style={{color: palette.text}}>Backend Development</h4>
+                    <p className="font-light text-sm" style={{color: palette.primary}}>API Design, Database Optimization, DevOps</p>
                   </div>
-                  <div className="border-l-2 border-gray-200 pl-6">
-                    <h4 className="font-light text-gray-900 mb-2">Data Science</h4>
-                    <p className="text-gray-500 font-light text-sm">Statistical Analysis, Data Visualization</p>
+                  <div className="border-l-2 pl-6" style={{borderColor: palette.accent}}>
+                    <h4 className="font-light mb-2" style={{color: palette.text}}>Data Science</h4>
+                    <p className="font-light text-sm" style={{color: palette.primary}}>Statistical Analysis, Data Visualization</p>
                   </div>
-                  <div className="border-l-2 border-gray-200 pl-6">
-                    <h4 className="font-light text-gray-900 mb-2">Mobile Development</h4>
-                    <p className="text-gray-500 font-light text-sm">Flutter, Cross-platform Apps</p>
+                  <div className="border-l-2 pl-6" style={{borderColor: palette.accent}}>
+                    <h4 className="font-light mb-2" style={{color: palette.text}}>Mobile Development</h4>
+                    <p className="font-light text-sm" style={{color: palette.primary}}>Flutter, Cross-platform Apps</p>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-8">
-                <div className="border border-gray-200 p-8">
-                  <h3 className="text-xl font-light text-gray-900 mb-6">Certification</h3>
+                <div className="border p-8" style={{borderColor: palette.accent, backgroundColor: palette.surface}}>
+                  <h3 className="text-xl font-light mb-6" style={{color: palette.text}}>Certification</h3>
                   {certifications.map((cert, index) => (
                     <div key={index} className="space-y-2">
-                      <h4 className="font-light text-gray-900">{cert.name}</h4>
-                      <p className="text-gray-500 font-light text-sm">{cert.issuer} • {cert.year}</p>
+                      <h4 className="font-light" style={{color: palette.text}}>{cert.name}</h4>
+                      <p className="font-light text-sm" style={{color: palette.primary}}>{cert.issuer} • {cert.year}</p>
                     </div>
                   ))}
                 </div>
 
                 <div className="grid grid-cols-3 gap-8 text-center">
                   <div>
-                    <div className="text-3xl font-extralight text-gray-900 mb-2">15+</div>
-                    <div className="text-xs font-light text-gray-500 uppercase tracking-wider">Projects</div>
+                    <div className="text-3xl font-extralight mb-2" style={{color: palette.text}}>15+</div>
+                    <div className="text-xs font-light uppercase tracking-wider" style={{color: palette.primary}}>Projects</div>
                   </div>
                   <div>
-                    <div className="text-3xl font-extralight text-gray-900 mb-2">12</div>
-                    <div className="text-xs font-light text-gray-500 uppercase tracking-wider">Technologies</div>
+                    <div className="text-3xl font-extralight mb-2" style={{color: palette.text}}>12</div>
+                    <div className="text-xs font-light uppercase tracking-wider" style={{color: palette.primary}}>Technologies</div>
                   </div>
                   <div>
-                    <div className="text-3xl font-extralight text-gray-900 mb-2">3+</div>
-                    <div className="text-xs font-light text-gray-500 uppercase tracking-wider">Years</div>
+                    <div className="text-3xl font-extralight mb-2" style={{color: palette.text}}>3+</div>
+                    <div className="text-xs font-light uppercase tracking-wider" style={{color: palette.primary}}>Years</div>
                   </div>
                 </div>
               </div>
@@ -472,42 +674,82 @@ const App = () => {
         </div>
       </section>
 
-      {/* Skills Section */}
-      <section id="skills" className="py-32 bg-white">
+      {/* Skills Section - Different for each mode */}
+      <section id="skills" className="py-32" style={{backgroundColor: palette.surface}}>
         <div className="max-w-7xl mx-auto px-8">
           <div className={`transform transition-all duration-1000 ${
             isVisible.skills ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
           }`}>
-            <h2 className="text-5xl font-extralight text-gray-900 mb-20 text-center">
-              Technologies
-            </h2>
-            
-            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
-              {technologies.map((tech, index) => (
-                <TechIcon key={tech.name} name={tech.name}>
-                  {tech.icon}
-                </TechIcon>
-              ))}
-            </div>
+            {currentMode === 'recruiter' ? (
+              <>
+                <h2 className="text-5xl font-extralight mb-12 text-center" style={{color: palette.text}}>
+                  Skills & Competencies
+                </h2>
+                
+                {/* Technical Skills */}
+                <div className="mb-16">
+                  <h3 className="text-2xl font-light mb-8 text-center" style={{color: palette.primary}}>
+                    Technical Skills
+                  </h3>
+                  <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
+                    {technologies.map((tech, index) => (
+                      <TechIcon key={tech.name} name={tech.name}>
+                        {tech.icon}
+                      </TechIcon>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Soft Skills */}
+                <div>
+                  <h3 className="text-2xl font-light mb-8 text-center" style={{color: palette.primary}}>
+                    Soft Skills
+                  </h3>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {getSoftSkills().map((skill, index) => (
+                      <div key={index} className="p-6 border" style={{borderColor: palette.accent, backgroundColor: palette.background}}>
+                        <h4 className="font-medium mb-2" style={{color: palette.text}}>{skill.name}</h4>
+                        <p className="text-sm font-light" style={{color: palette.primary}}>{skill.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 className="text-5xl font-extralight mb-20 text-center" style={{color: palette.text}}>
+                  Technologies
+                </h2>
+                
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
+                  {technologies.map((tech, index) => (
+                    <TechIcon key={tech.name} name={tech.name}>
+                      {tech.icon}
+                    </TechIcon>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-32 bg-gray-50">
+      <section id="projects" className="py-32" style={{backgroundColor: palette.background}}>
         <div className="max-w-7xl mx-auto px-8">
           <div className={`transform transition-all duration-1000 ${
             isVisible.projects ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
           }`}>
-            <h2 className="text-5xl font-extralight text-gray-900 mb-20 text-center">
+            <h2 className="text-5xl font-extralight mb-20 text-center" style={{color: palette.text}}>
               Selected Work
             </h2>
             
             <div className="grid md:grid-cols-2 gap-16">
-              {projects.map((project, index) => (
+              {getProjectsForMode().map((project, index) => (
                 <div 
                   key={index}
-                  className="bg-white cursor-pointer group"
+                  className="cursor-pointer group"
+                  style={{backgroundColor: palette.surface}}
                   onClick={() => setSelectedProject(project)}
                 >
                   <div className="relative overflow-hidden">
@@ -524,20 +766,21 @@ const App = () => {
                   </div>
                   
                   <div className="p-8">
-                    <h3 className="text-2xl font-light text-gray-900 mb-4">{project.title}</h3>
-                    <p className="text-gray-600 font-light leading-relaxed mb-6">{project.shortDescription}</p>
+                    <h3 className="text-2xl font-light mb-4" style={{color: palette.text}}>{project.title}</h3>
+                    <p className="font-light leading-relaxed mb-6" style={{color: palette.primary}}>{project.shortDescription}</p>
                     
                     <div className="flex flex-wrap gap-2">
                       {project.technologies.slice(0, 3).map((tech, techIndex) => (
                         <span 
                           key={techIndex}
-                          className="text-xs font-light text-gray-500 px-3 py-1 border border-gray-200 rounded-none"
+                          className="text-xs font-light px-3 py-1 border rounded-none"
+                          style={{color: palette.primary, borderColor: palette.accent}}
                         >
                           {tech}
                         </span>
                       ))}
                       {project.technologies.length > 3 && (
-                        <span className="text-xs font-light text-gray-500 px-3 py-1 border border-gray-200 rounded-none">
+                        <span className="text-xs font-light px-3 py-1 border rounded-none" style={{color: palette.primary, borderColor: palette.accent}}>
                           +{project.technologies.length - 3}
                         </span>
                       )}
@@ -551,15 +794,15 @@ const App = () => {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-32 bg-white">
+      <section id="contact" className="py-32" style={{backgroundColor: palette.surface}}>
         <div className="max-w-4xl mx-auto px-8 text-center">
           <div className={`transform transition-all duration-1000 ${
             isVisible.contact ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
           }`}>
-            <h2 className="text-5xl font-extralight text-gray-900 mb-8">
+            <h2 className="text-5xl font-extralight mb-8" style={{color: palette.text}}>
               Get In Touch
             </h2>
-            <p className="text-lg font-light text-gray-600 mb-16 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg font-light mb-16 max-w-2xl mx-auto leading-relaxed" style={{color: palette.primary}}>
               I'm always interested in new opportunities and exciting projects. 
               Let's discuss how we can work together.
             </p>
@@ -567,7 +810,8 @@ const App = () => {
             <div className="flex justify-center gap-8">
               <a 
                 href="mailto:krismiidtv@gmail.com"
-                className="px-12 py-4 text-sm font-light text-gray-900 border border-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300 tracking-wider uppercase rounded-none"
+                className="px-12 py-4 text-sm font-light border transition-all duration-300 tracking-wider uppercase rounded-none"
+                style={{color: palette.text, borderColor: palette.text}}
               >
                 Email
               </a>
@@ -575,7 +819,8 @@ const App = () => {
                 href="https://linkedin.com/in/krismiid"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-12 py-4 text-sm font-light text-white bg-gray-900 hover:bg-gray-700 transition-all duration-300 tracking-wider uppercase rounded-none"
+                className="px-12 py-4 text-sm font-light text-white transition-all duration-300 tracking-wider uppercase rounded-none"
+                style={{backgroundColor: palette.primary}}
               >
                 LinkedIn
               </a>
@@ -585,9 +830,9 @@ const App = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 py-8">
+      <footer className="border-t py-8" style={{borderColor: `${palette.primary}20`}}>
         <div className="max-w-7xl mx-auto px-8 text-center">
-          <p className="text-gray-400 font-light text-sm tracking-wider">
+          <p className="font-light text-sm tracking-wider" style={{color: palette.primary}}>
             © 2025 Yugor Paulo — Backend Developer & Data Analyst
           </p>
         </div>
