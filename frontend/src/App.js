@@ -9,6 +9,7 @@ const App = () => {
   const [showModeSelection, setShowModeSelection] = useState(false);
   const [currentMode, setCurrentMode] = useState(null);
   const [typedText, setTypedText] = useState('');
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const fullText = "Hi, I'm Yugor Paulo.";
 
@@ -74,8 +75,16 @@ const App = () => {
   };
 
   const getColorPalette = () => {
+    // Distinct palettes for each mode and dark/light
     if (currentMode === 'recruiter') {
-      return {
+      return isDarkMode ? {
+        primary: '#a3bffa',
+        secondary: '#b794f4',
+        accent: '#fbb6ce',
+        text: '#f7fafc',
+        background: '#18181b',
+        surface: '#23232a'
+      } : {
         primary: '#667eea',
         secondary: '#764ba2',
         accent: '#f093fb',
@@ -84,10 +93,17 @@ const App = () => {
         surface: '#ffffff'
       };
     }
-    // Developer and Guest modes use the specified colors
-    return {
+    // Developer and Guest modes
+    return isDarkMode ? {
+      primary: '#b5c7c9',
+      secondary: '#bfc99a',
+      accent: '#cfd8cf',
+      text: '#f7fafc',
+      background: '#18181b',
+      surface: '#23232a'
+    } : {
       primary: '#657a7c',
-      secondary: '#657348', 
+      secondary: '#657348',
       accent: '#99a292',
       text: '#2f3d50',
       background: '#e0e1e1',
@@ -100,10 +116,17 @@ const App = () => {
   // SVG Icons for technologies
   const TechIcon = ({ name, children }) => (
     <div className="flex flex-col items-center group">
-      <div className="w-16 h-16 mb-3 flex items-center justify-center rounded-xl bg-gray-100 group-hover:bg-gray-200 transition-all duration-300 group-hover:scale-110 filter grayscale hover:grayscale-0">
+      <div
+        className="w-16 h-16 mb-3 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 filter grayscale hover:grayscale-0"
+        style={{
+          background: isDarkMode ? '#23232a' : '#f3f4f6',
+          border: `1px solid ${palette.accent}`,
+          boxShadow: isDarkMode ? '0 2px 8px #18181b44' : '0 2px 8px #e0e1e144'
+        }}
+      >
         {children}
       </div>
-      <span className="text-sm font-medium text-gray-600 group-hover:text-gray-900 transition-colors">{name}</span>
+      <span className="text-sm font-medium transition-colors" style={{color: palette.text}}>{name}</span>
     </div>
   );
 
@@ -344,7 +367,7 @@ const App = () => {
   const certifications = [
     {
       name: 'Stanford Data Science for Bioengineering',
-      issuer: 'Stanford University',
+      issuer: 'Stanford Data Ocean',
       icon: '🎓',
       year: '2024'
     }
@@ -456,8 +479,42 @@ const App = () => {
     );
   };
 
+  const DarkModeToggle = () => (
+    <button
+      aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+      onClick={() => setIsDarkMode(v => !v)}
+      style={{
+        position: 'fixed',
+        top: 20,
+        left: 20,
+        zIndex: 100,
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        padding: 0,
+        width: 40,
+        height: 40,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {isDarkMode ? (
+        // Sun icon (white)
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      ) : (
+        // Moon icon (black)
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      )}
+    </button>
+  );
+
   const ModeSelector = () => (
     <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: palette.background}}>
+      <DarkModeToggle />
+      <div className="absolute top-6 left-6 z-50">
+        <DarkModeToggle />
+      </div>
       <div className="text-center max-w-2xl mx-auto px-8">
         <div className="mb-16">
           <h1 className="text-7xl md:text-9xl font-extralight mb-8 leading-none" style={{color: palette.text}}>
@@ -478,29 +535,26 @@ const App = () => {
               <button
                 onClick={() => handleModeSelection('recruiter')}
                 className="p-8 border border-gray-300 hover:border-purple-400 transition-all duration-300 group rounded-none"
-                style={{':hover': {borderColor: '#667eea'}}}
               >
-                <div className="text-4xl mb-4">👔</div>
+                <div className="text-4xl mb-4"></div>
                 <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Recruiter</h3>
                 <p className="text-sm font-light text-gray-500">Focus on skills, experience, and achievements</p>
               </button>
               
               <button
                 onClick={() => handleModeSelection('developer')}
-                className="p-8 border border-gray-300 transition-all duration-300 group rounded-none"
-                style={{borderColor: palette.primary, ':hover': {borderColor: palette.secondary}}}
+                className="p-8 border border-gray-300 hover:border-purple-400 transition-all duration-300 group rounded-none"
               >
-                <div className="text-4xl mb-4">💻</div>
+                <div className="text-4xl mb-4"></div>
                 <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Developer</h3>
                 <p className="text-sm font-light text-gray-500">Deep dive into technical implementations</p>
               </button>
               
               <button
                 onClick={() => handleModeSelection('guest')}
-                className="p-8 border border-gray-300 transition-all duration-300 group rounded-none"
-                style={{borderColor: palette.primary, ':hover': {borderColor: palette.secondary}}}
+                className="p-8 border border-gray-300 hover:border-purple-400 transition-all duration-300 group rounded-none"
               >
-                <div className="text-4xl mb-4">👋</div>
+                <div className="text-4xl mb-4"></div>
                 <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Guest</h3>
                 <p className="text-sm font-light text-gray-500">General overview and resume access</p>
               </button>
@@ -517,21 +571,30 @@ const App = () => {
 
   return (
     <div className="min-h-screen" style={{backgroundColor: palette.background}}>
+      <DarkModeToggle />
       {/* Navigation */}
       <nav className="fixed top-0 w-full backdrop-blur-sm z-40 border-b" 
            style={{backgroundColor: `${palette.surface}95`, borderColor: `${palette.primary}20`}}>
         <div className="max-w-7xl mx-auto px-8 py-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
+              <DarkModeToggle />
               <select 
                 value={currentMode} 
                 onChange={(e) => setCurrentMode(e.target.value)}
-                className="text-sm font-light border-none bg-transparent focus:outline-none cursor-pointer"
-                style={{color: palette.text}}
+                className="text-sm font-light border rounded px-2 py-1 focus:outline-none cursor-pointer transition-colors duration-200"
+                style={{
+                  color: palette.text,
+                  backgroundColor: isDarkMode ? palette.surface : '#fff',
+                  borderColor: isDarkMode ? palette.primary : '#ccc',
+                  boxShadow: isDarkMode ? '0 2px 8px #0004' : '0 2px 8px #0001',
+                  minWidth: 200, // increased from 150
+                  paddingRight: 32 // extra space for dropdown arrow
+                }}
               >
-                <option value="recruiter">👔 Recruiter Mode</option>
-                <option value="developer">💻 Developer Mode</option>
-                <option value="guest">👋 Guest Mode</option>
+                <option value="recruiter" style={{background: isDarkMode ? palette.surface : '#fff', color: palette.text}}>👔 Recruiter Mode</option>
+                <option value="developer" style={{background: isDarkMode ? palette.surface : '#fff', color: palette.text}}>💻 Developer Mode</option>
+                <option value="guest" style={{background: isDarkMode ? palette.surface : '#fff', color: palette.text}}>👋 Guest Mode</option>
               </select>
             </div>
             <div className="hidden md:flex space-x-12">
