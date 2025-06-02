@@ -9,6 +9,7 @@ module.exports = {
       colors: {
         'olive-green': '#657348',
         'blue-gray': '#657a7c', 
+        'steel-blue': '#56727f',
         'dark-green': '#253021',
         'light-gray': '#e2e2e2',
       },
@@ -22,6 +23,7 @@ module.exports = {
         'scale-in': 'scaleIn 0.5s ease-out',
         'bounce-slow': 'bounce 2s infinite',
         'pulse-slow': 'pulse 3s infinite',
+        'float': 'float 6s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -40,6 +42,10 @@ module.exports = {
           '0%': { transform: 'scale(0.9)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
         },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
       },
       backdropBlur: {
         xs: '2px',
@@ -48,6 +54,7 @@ module.exports = {
         'custom': '0 4px 20px rgba(37, 48, 33, 0.1)',
         'custom-lg': '0 8px 40px rgba(37, 48, 33, 0.15)',
         'custom-xl': '0 16px 60px rgba(37, 48, 33, 0.2)',
+        'steel': '0 4px 20px rgba(86, 114, 127, 0.15)',
       },
       spacing: {
         '18': '4.5rem',
