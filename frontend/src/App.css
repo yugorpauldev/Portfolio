@@ -1,23 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* Global Styles */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 300;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 3px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #e2e2e2;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #657348;
-  border-radius: 4px;
+  background: #9ca3af;
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #657a7c;
+  background: #6b7280;
 }
 
 /* Smooth scroll behavior */
@@ -25,11 +39,77 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom animations */
-@keyframes fadeInUp {
+/* Typography Refinements */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em;
+  font-weight: 200;
+  line-height: 1.1;
+}
+
+p {
+  color: #6b7280;
+  font-weight: 300;
+}
+
+/* Button Styles */
+button, a {
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus States */
+button:focus-visible,
+a:focus-visible {
+  outline: 1px solid #374151;
+  outline-offset: 2px;
+}
+
+/* Project Card Hover Effects */
+.project-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.project-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Technology Icon Styles */
+.tech-icon {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tech-icon:hover {
+  transform: translateY(-4px);
+}
+
+/* Image Effects */
+img {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Modal Animations */
+.modal-overlay {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -37,109 +117,90 @@ html {
   }
 }
 
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
+/* Navigation Enhancement */
+nav {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Section Spacing */
+section {
+  scroll-margin-top: 80px;
+}
+
+/* Typography Scale */
+.text-hero {
+  font-size: clamp(3rem, 8vw, 8rem);
+  line-height: 0.9;
+  font-weight: 100;
+}
+
+.text-subtitle {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 200;
+}
+
+/* Minimalist Borders */
+.border-minimal {
+  border-width: 0.5px;
+  border-color: #e5e7eb;
+}
+
+/* Hover States */
+.hover-lift {
+  transition: transform 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-1px);
+}
+
+/* Grid Layouts */
+.grid-auto-fit-sm {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.grid-auto-fit-md {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  .text-hero {
+    font-size: clamp(2.5rem, 12vw, 4rem);
   }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+  
+  .text-subtitle {
+    font-size: clamp(1.25rem, 5vw, 1.75rem);
   }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-fadeInUp {
-  animation: fadeInUp 0.8s ease-out;
-}
-
-.animate-slideInLeft {
-  animation: slideInLeft 0.8s ease-out;
-}
-
-.animate-slideInRight {
-  animation: slideInRight 0.8s ease-out;
-}
-
-/* Gradient text effect */
-.gradient-text {
-  background: linear-gradient(135deg, #657348, #657a7c);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Card hover effects */
-.card-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.card-hover:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(37, 48, 33, 0.15);
-}
-
-/* Loading animations for skills bars */
-.skill-bar {
-  position: relative;
-  overflow: hidden;
-}
-
-.skill-bar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
+  
+  section {
+    scroll-margin-top: 60px;
   }
 }
 
-/* Button ripple effect */
-.btn-ripple {
-  position: relative;
-  overflow: hidden;
+/* Loading States */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
 }
 
-.btn-ripple::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
+/* Selection Styles */
+::selection {
+  background-color: #374151;
+  color: white;
 }
 
-.btn-ripple:active::before {
-  width: 300px;
-  height: 300px;
+/* Gradient Overlays */
+.gradient-overlay {
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.1) 100%);
 }
 
-/* Floating animation for hero elements */
+/* Subtle Animations */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
 @keyframes float {
   0%, 100% {
     transform: translateY(0px);
@@ -149,98 +210,57 @@ html {
   }
 }
 
-.float {
-  animation: float 3s ease-in-out infinite;
-}
-
-/* Typing animation effect */
-@keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-.typing-effect {
-  overflow: hidden;
-  border-right: 2px solid #657348;
-  animation: typing 3s steps(30, end), blink-caret 0.75s step-end infinite;
-}
-
-@keyframes blink-caret {
-  from, to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: #657348;
-  }
-}
-
-/* Responsive design improvements */
-@media (max-width: 768px) {
-  .hero-title {
-    font-size: 2.5rem;
+/* Print Styles */
+@media print {
+  * {
+    color: #000 !important;
+    background: #fff !important;
   }
   
-  .hero-subtitle {
-    font-size: 1.25rem;
+  nav, footer, button {
+    display: none !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .text-gray-600 {
+    color: #000;
   }
   
-  .section-padding {
-    padding: 3rem 1rem;
+  .border-gray-200 {
+    border-color: #000;
   }
 }
 
-/* Dark mode styles for better contrast */
-.dark-section {
-  background: linear-gradient(135deg, #253021 0%, #657a7c 100%);
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
-/* Parallax effect styles */
-.parallax {
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+/* Dark Mode Support (Future Enhancement) */
+@media (prefers-color-scheme: dark) {
+  /* Dark mode styles can be added here when needed */
 }
 
-/* Grid layouts for better responsiveness */
-.grid-auto-fit {
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+/* Performance Optimizations */
+.will-change-transform {
+  will-change: transform;
 }
 
-/* Enhanced focus states for accessibility */
-button:focus-visible,
-a:focus-visible {
-  outline: 2px solid #657348;
-  outline-offset: 2px;
+.will-change-opacity {
+  will-change: opacity;
 }
 
-/* Smooth transitions for all interactive elements */
-button, a, .card {
-  transition: all 0.3s ease;
-}
-
-/* Image overlay effects */
-.image-overlay {
-  position: relative;
-  overflow: hidden;
-}
-
-.image-overlay::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, rgba(37, 48, 33, 0.8), rgba(101, 115, 72, 0.6));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.image-overlay:hover::after {
-  opacity: 1;
+/* Container Queries (Future Enhancement) */
+@container (min-width: 768px) {
+  .container-md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
