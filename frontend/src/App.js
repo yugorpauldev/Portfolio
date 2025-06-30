@@ -491,16 +491,24 @@ const App = () => {
 
     return (
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 md:p-4">
-        <div className="bg-white rounded-none max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div
+          className="rounded-none max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+          style={{
+            background: isDarkMode ? palette.surface : '#fff',
+            color: isDarkMode ? palette.text : '#222',
+            transition: 'background 0.3s, color 0.3s'
+          }}
+        >
           {/* Remove sticky for mobile, keep for md+ */}
-          <div className={`p-6 md:p-8 border-b border-gray-100 flex flex-col md:flex-row md:justify-between md:items-start ${window.innerWidth < 768 ? '' : 'sticky top-0 bg-white'}`}> 
+          <div className={`p-6 md:p-8 border-b border-gray-100 flex flex-col md:flex-row md:justify-between md:items-start`}> 
             <div>
-              <h2 className="text-2xl md:text-3xl font-light mb-2" style={{color: isDarkMode && window.innerWidth < 768 ? '#222' : palette.text}}>{project.title}</h2>
-              <p className="text-gray-500 font-light">{project.shortDescription}</p>
+              {/* Remove the project title from the sticky header so it scrolls with the content */}
+              <p className="text-gray-500 font-light" style={{color: isDarkMode ? palette.primary : undefined}}>{project.shortDescription}</p>
             </div>
             <button 
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 text-3xl font-light leading-none mt-2 md:mt-0"
+              style={{color: isDarkMode ? palette.primary : undefined}}
             >
               ×
             </button>
@@ -512,19 +520,21 @@ const App = () => {
               className="w-full h-64 object-cover filter grayscale hover:grayscale-0 transition-all duration-500"
             />
             <div className="space-y-8">
+              {/* Move the project title here so it scrolls with the modal content */}
               <div>
+                <h2 className="text-2xl md:text-3xl font-light mb-2" style={{color: palette.text, transition: 'color 0.3s'}}>{project.title}</h2>
                 <h3 className="text-xl font-light mb-4 border-b border-gray-100 pb-2" style={{color: palette.text}}>Overview</h3>
-                <p className="text-gray-600 leading-relaxed font-light">{project.fullDescription}</p>
+                <p className="text-gray-600 leading-relaxed font-light" style={{color: isDarkMode ? palette.primary : undefined}}>{project.fullDescription}</p>
               </div>
               <div>
                 <h3 className="text-xl font-light mb-4 border-b border-gray-100 pb-2" style={{color: palette.text}}>Implementation</h3>
-                <p className="text-gray-600 mb-6 font-light">{project.implementation.overview}</p>
+                <p className="text-gray-600 mb-6 font-light" style={{color: isDarkMode ? palette.primary : undefined}}>{project.implementation.overview}</p>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
                     <h4 className="font-medium mb-3" style={{color: palette.text}}>Key Features</h4>
                     <ul className="space-y-2 text-gray-600 font-light">
                       {project.implementation.keyFeatures.map((feature, index) => (
-                        <li key={index} className="flex items-start">
+                        <li key={index} className="flex items-start" style={{color: isDarkMode ? palette.primary : undefined}}>
                           <span className="w-1 h-1 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
                           {feature}
                         </li>
@@ -535,7 +545,7 @@ const App = () => {
                     <h4 className="font-medium mb-3" style={{color: palette.text}}>Technical Challenges</h4>
                     <ul className="space-y-2 text-gray-600 font-light">
                       {project.implementation.technicalChallenges.map((challenge, index) => (
-                        <li key={index} className="flex items-start">
+                        <li key={index} className="flex items-start" style={{color: isDarkMode ? palette.primary : undefined}}>
                           <span className="w-1 h-1 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
                           {challenge}
                         </li>
@@ -545,7 +555,7 @@ const App = () => {
                 </div>
                 <div className="mt-8">
                   <h4 className="font-medium mb-3" style={{color: palette.text}}>Deployment</h4>
-                  <p className="text-gray-600 font-light">{project.implementation.deployment}</p>
+                  <p className="text-gray-600 font-light" style={{color: isDarkMode ? palette.primary : undefined}}>{project.implementation.deployment}</p>
                 </div>
               </div>
               <div>
@@ -555,7 +565,7 @@ const App = () => {
                     <span 
                       key={index}
                       className="px-4 py-2 text-sm font-light border rounded-none hover:bg-gray-50 transition-colors"
-                      style={{color: palette.text, borderColor: palette.primary}}
+                      style={{color: palette.text, borderColor: palette.primary, background: isDarkMode ? palette.background : undefined}}
                     >
                       {tech}
                     </span>
@@ -569,8 +579,13 @@ const App = () => {
                     href={overviewLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-8 py-3 text-sm font-light border hover:bg-gray-900 hover:text-white transition-all duration-300 rounded-none"
-                    style={{color: palette.text, borderColor: palette.text}}
+                    className="px-8 py-3 text-sm font-light border transition-all duration-300 rounded-none"
+                    style={{
+                      color: isDarkMode ? palette.text : palette.text,
+                      borderColor: palette.text,
+                      background: isDarkMode ? palette.primary : undefined,
+                      ...(isDarkMode ? {color: palette.background} : {})
+                    }}
                   >
                     Show Overview of Work
                   </a>
