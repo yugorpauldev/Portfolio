@@ -398,7 +398,7 @@ const App = () => {
             ? 'Requires Google Calendar API credentials, a Google Sheet with candidate info (Name, Email, Background), a Gmail account with OAuth2, and Azure OpenAI API (GPT-4o recommended).'
             : 'Requires Google and OpenAI API credentials and a candidate spreadsheet.'
         },
-        technologies: ['n8n', 'Google Calendar API', 'Google Sheets API', 'Gmail API', 'GPT-4', 'Azure OpenAI'],
+        technologies: ['n8n', 'Google Calendar API', 'Google Sheets API', 'Gmail API', 'Azure OpenAI API'],
         image: 'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg',
         github: '',
         demo: ''
@@ -583,6 +583,7 @@ const App = () => {
     <button
       aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
       onClick={() => setIsDarkMode(v => !v)}
+      className={window.innerWidth <= 768 ? 'darkmode-toggle-mobile' : ''}
       style={{
         position: 'fixed',
         top: 20,
@@ -592,19 +593,17 @@ const App = () => {
         border: 'none',
         cursor: 'pointer',
         padding: 0,
-        width: 40,
-        height: 40,
+        width: window.innerWidth <= 768 ? 28 : 40,
+        height: window.innerWidth <= 768 ? 28 : 40,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
       }}
     >
       {isDarkMode ? (
-        // Sun icon (white)
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg width={window.innerWidth <= 768 ? 20 : 28} height={window.innerWidth <= 768 ? 20 : 28} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       ) : (
-        // Moon icon (black)
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+        <svg width={window.innerWidth <= 768 ? 20 : 28} height={window.innerWidth <= 768 ? 20 : 28} viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
       )}
     </button>
   );
@@ -612,55 +611,55 @@ const App = () => {
   const ModeSelector = () => (
     <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: palette.background}}>
       <DarkModeToggle />
-      <div className="absolute top-6 left-6 z-50">
-        <DarkModeToggle />
-      </div>
-      <div className="text-center max-w-2xl mx-auto px-8">
-        <div className="mb-16">
-          <h1 className="text-7xl md:text-9xl font-extralight mb-8 leading-none" style={{color: palette.text}}>
-            {typedText}
-            <span className="animate-pulse">|</span>
-          </h1>
-          <p className="text-2xl md:text-3xl font-extralight mb-16 tracking-wide" style={{color: palette.primary}}>
-            Nice to meet you.
-          </p>
-        </div>
-
-        {showModeSelection && (
-          <div className="space-y-8 animate-fade-in">
-            <p className="text-lg font-light mb-12" style={{color: palette.text}}>
-              I'd like to tailor your experience. You are a:
+      <div
+        className="flex flex-col items-center justify-center fixed inset-0 z-50 overflow-auto"
+        style={{backgroundColor: palette.background, maxHeight: '100vh'}}
+      >
+        <div className="text-center max-w-2xl mx-auto px-8">
+          <div className="mb-16">
+            <h1 className="text-7xl md:text-9xl font-extralight mb-8 leading-none" style={{color: palette.text}}>
+              {typedText}
+              <span className="animate-pulse">|</span>
+            </h1>
+            <p className="text-2xl md:text-3xl font-extralight mb-16 tracking-wide" style={{color: palette.primary}}>
+              Nice to meet you.
             </p>
-            <div className="grid md:grid-cols-3 gap-6">
-              <button
-                onClick={() => handleModeSelection('recruiter')}
-                className="p-8 border border-gray-300 hover:border-purple-400 transition-all duration-300 group rounded-none"
-              >
-                <div className="text-4xl mb-4"></div>
-                <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Recruiter</h3>
-                <p className="text-sm font-light text-gray-500">Focus on skills, experience, and achievements</p>
-              </button>
-              
-              <button
-                onClick={() => handleModeSelection('developer')}
-                className="p-8 border border-gray-300 hover:border-purple-400 transition-all duration-300 group rounded-none"
-              >
-                <div className="text-4xl mb-4"></div>
-                <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Developer</h3>
-                <p className="text-sm font-light text-gray-500">Deep dive into technical implementations</p>
-              </button>
-              
-              <button
-                onClick={() => handleModeSelection('guest')}
-                className="p-8 border border-gray-300 hover:border-purple-400 transition-all duration-300 group rounded-none"
-              >
-                <div className="text-4xl mb-4"></div>
-                <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Guest</h3>
-                <p className="text-sm font-light text-gray-500">General overview and resume access</p>
-              </button>
-            </div>
           </div>
-        )}
+
+          {showModeSelection && (
+            <div className="space-y-8 animate-fade-in">
+              <p className="text-lg font-light mb-12" style={{color: palette.text}}>
+                I'd like to tailor your experience. You are a:
+              </p>
+              <div className="grid md:grid-cols-3 gap-6">
+                <button
+                  onClick={() => handleModeSelection('recruiter')}
+                  className="p-8 border border-gray-300 hover:border-purple-400 transition-all duration-300 group rounded-none"
+                >
+                  <div className="text-4xl mb-4"></div>
+                  <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Recruiter</h3>
+                  <p className="text-sm font-light text-gray-500">Focus on skills, experience, and achievements</p>
+                </button>
+                <button
+                  onClick={() => handleModeSelection('developer')}
+                  className="p-8 border border-gray-300 hover:border-purple-400 transition-all duration-300 group rounded-none"
+                >
+                  <div className="text-4xl mb-4"></div>
+                  <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Developer</h3>
+                  <p className="text-sm font-light text-gray-500">Deep dive into technical implementations</p>
+                </button>
+                <button
+                  onClick={() => handleModeSelection('guest')}
+                  className="p-8 border border-gray-300 hover:border-purple-400 transition-all duration-300 group rounded-none bg-transparent"
+                >
+                  <div className="text-4xl mb-4"></div>
+                  <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Guest</h3>
+                  <p className="text-sm font-light text-gray-500">General overview and resume access</p>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -703,8 +702,14 @@ const App = () => {
               </select>
             </div>
             {/* Mobile menu icon */}
-            <button className="md:hidden ml-4" onClick={() => setShowMobileNav(v => !v)} aria-label="Open navigation">
-              <svg width="28" height="28" fill="none" stroke={palette.text} strokeWidth="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            <button 
+              className="md:hidden ml-4" 
+              onClick={() => setShowMobileNav(v => !v)} 
+              aria-label="Toggle navigation"
+            >
+              <svg width="28" height="28" fill="none" stroke={palette.text} strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M4 6h16M4 12h16M4 18h16"/>
+              </svg>
             </button>
           </div>
           {/* Desktop nav */}
@@ -743,25 +748,47 @@ const App = () => {
             })}
           </div>
         </div>
-        {/* Mobile nav side drawer */}
+        {/* Mobile Navigation Sidebar */}
         {showMobileNav && (
           <>
-            {/* Blurred overlay */}
-            <div className="fixed inset-0 z-40 backdrop-blur-md bg-black/30"></div>
-            <div className="fixed inset-0 z-50 bg-white dark:bg-gray-900 shadow-lg flex flex-col p-8 gap-6" style={{backgroundColor: isDarkMode ? '#18181b' : '#fff', opacity: 1}}>
-              <div className="flex justify-end mb-8">
-                <button onClick={() => setShowMobileNav(false)} aria-label="Close navigation">
-                  <svg width="28" height="28" fill="none" stroke={palette.text} strokeWidth="2" viewBox="0 0 24 24"><path d="M6 6l12 12M6 18L18 6"/></svg>
+            {/* Fully opaque overlay that closes sidebar when clicked and hides background content */}
+            <div
+              className="mobile-sidebar-overlay"
+              onClick={() => setShowMobileNav(false)}
+            />
+            {/* Sidebar Container - now on the right */}
+            <div
+              className="mobile-sidebar open"
+            >
+              {/* Sidebar Header */}
+              <div className="mobile-sidebar-header">
+                <h3 className="text-lg font-medium dark:text-white">Menu</h3>
+                <button
+                  onClick={() => setShowMobileNav(false)}
+                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  aria-label="Close menu"
+                >
+                  <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M6 18L18 6M6 6l12 12"/>
+                  </svg>
                 </button>
               </div>
-              <div className="flex flex-col items-center justify-center flex-1 gap-6">
+              {/* Navigation Links */}
+              <div className="mobile-sidebar-links">
                 {['home', 'about', 'skills', 'projects', 'contact'].map(section => (
                   <button
                     key={section}
-                    onClick={() => { setShowMobileNav(false); scrollToSection(section); }}
-                    className={`text-lg font-light uppercase tracking-wider py-2 text-center w-full ${activeSection === section ? 'font-bold' : ''}`}
-                    style={{color: palette.text, fontSize: '14px'}}>
-                    {section}
+                    onClick={() => {
+                      setShowMobileNav(false);
+                      scrollToSection(section);
+                    }}
+                    className={`text-left py-3 px-4 rounded-lg transition-colors ${
+                      activeSection === section
+                        ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+                        : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    {section.charAt(0).toUpperCase() + section.slice(1)}
                   </button>
                 ))}
               </div>
@@ -815,12 +842,12 @@ const App = () => {
             
             <div className="grid md:grid-cols-2 gap-20 items-start">
               <div className="space-y-8">
-                <p className="text-lg font-light leading-relaxed" style={{color: palette.primary}}>
+                <p className="about-description">
                   I'm a passionate backend developer and data analyst with expertise in 
                   Python, Django, Flask, and automation solutions. My work combines 
                   robust backend architecture, data-driven insights, and workflow automation for business efficiency.
                 </p>
-                <p className="text-lg font-light leading-relaxed" style={{color: palette.primary}}>
+                <p className="about-description">
                   With a Stanford certification in Data Science for Bioengineering, I bring statistical 
                   rigor and analytical thinking to software development. I specialize in building scalable 
                   APIs, managing complex databases, creating data analytics solutions, and architecting automation workflows (n8n, Zapier) for end-to-end business processes.

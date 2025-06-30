@@ -264,3 +264,105 @@ section {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* Mobile Sidebar Styles */
+@media (max-width: 768px) {
+  .mobile-sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: #18181b;
+    opacity: 1;
+    transition: opacity 0.3s;
+  }
+  .mobile-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 80vw;
+    max-width: 24rem;
+    z-index: 9999;
+    background: #18181b;
+    box-shadow: 0 0 24px 0 rgba(0,0,0,0.12);
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    display: flex;
+    flex-direction: column;
+  }
+  .mobile-sidebar.open {
+    transform: translateX(0);
+  }
+  .mobile-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #27272a;
+  }
+  .mobile-sidebar-links {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1rem;
+    overflow-y: auto;
+  }
+  .mobile-sidebar-links button {
+    color: #f3f4f6 !important;
+    font-weight: 400;
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    background: transparent;
+    transition: background 0.2s, color 0.2s;
+  }
+  .mobile-sidebar-links button:active,
+  .mobile-sidebar-links button:focus,
+  .mobile-sidebar-links button.selected {
+    background: #23232a !important;
+    color: #fff !important;
+  }
+  /* Smaller toggle for dark mode on mobile */
+  .darkmode-toggle-mobile {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+  }
+}
+
+/* Main menu (navigation) text responsive font size */
+.main-menu-link {
+  font-size: clamp(1rem, 2.5vw, 1.35rem);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+
+@media (max-width: 768px) {
+  .main-menu-link {
+    font-size: clamp(0.95rem, 4vw, 1.1rem);
+  }
+}
+
+/* Responsive main menu (navigation) text */
+nav .main-menu-link, nav .main-menu-button, nav .main-menu a, nav .main-menu button {
+  font-size: clamp(1rem, 2.5vw, 1.35rem);
+}
+
+@media (max-width: 768px) {
+  nav .main-menu-link, nav .main-menu-button, nav .main-menu a, nav .main-menu button {
+    font-size: clamp(0.95rem, 4vw, 1.1rem);
+  }
+}
+
+/* About/Welcome Description Responsive Font Size */
+.about-description {
+  font-size: clamp(1.05rem, 2.2vw, 1.18rem);
+  line-height: 1.6;
+  color: #6b7280;
+}
+@media (max-width: 768px) {
+  .about-description {
+    font-size: clamp(0.98rem, 3.5vw, 1.05rem);
+  }
+}
