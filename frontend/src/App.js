@@ -15,6 +15,7 @@ const App = () => {
   const [currentMode, setCurrentMode] = useState(null);
   const [typedText, setTypedText] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showMobileNav, setShowMobileNav] = useState(false);
 
   const fullText = "Hi, I'm Yugor Paulo.";
 
@@ -466,8 +467,6 @@ const App = () => {
 
   const ProjectModal = ({ project, onClose }) => {
     if (!project) return null;
-
-    // Helper to determine if project is an agent project
     const isAgentProject = project.title.toLowerCase().includes('agent') || project.title.toLowerCase().includes('email manager');
 
     // Scroll to project card by title
@@ -485,16 +484,17 @@ const App = () => {
     };
 
     return (
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-none max-w-5xl max-h-[90vh] overflow-y-auto shadow-2xl">
-          <div className="sticky top-0 bg-white p-8 border-b border-gray-100 flex justify-between items-start">
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 md:p-4">
+        <div className="bg-white rounded-none max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+          {/* Remove sticky for mobile, keep for md+ */}
+          <div className={`p-6 md:p-8 border-b border-gray-100 flex flex-col md:flex-row md:justify-between md:items-start ${window.innerWidth < 768 ? '' : 'sticky top-0 bg-white'}`}> 
             <div>
-              <h2 className="text-3xl font-light mb-2" style={{color: palette.text}}>{project.title}</h2>
+              <h2 className="text-2xl md:text-3xl font-light mb-2" style={{color: isDarkMode && window.innerWidth < 768 ? '#222' : palette.text}}>{project.title}</h2>
               <p className="text-gray-500 font-light">{project.shortDescription}</p>
             </div>
             <button 
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 text-3xl font-light leading-none"
+              className="text-gray-400 hover:text-gray-600 text-3xl font-light leading-none mt-2 md:mt-0"
             >
               ×
             </button>
@@ -675,23 +675,26 @@ const App = () => {
       {/* Navigation */}
       <nav className="fixed top-0 w-full backdrop-blur-sm z-40 border-b" 
            style={{backgroundColor: `${palette.surface}95`, borderColor: `${palette.primary}20`}}>
-        <div className="max-w-7xl mx-auto px-8 py-6">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <DarkModeToggle />
+        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between">
+          <div className="flex items-center w-full md:w-auto justify-between">
+            <div className="flex items-center w-full gap-4 md:gap-0">
+              {/* Align toggles and reduce font size for mobile */}
+              <div className="mr-8 md:mr-4 flex-shrink-0 flex items-center">
+                <DarkModeToggle />
+              </div>
               <select 
                 value={currentMode} 
                 onChange={(e) => setCurrentMode(e.target.value)}
-                className="text-sm font-light border-none rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200"
+                className="text-xs md:text-sm font-light border-none rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200"
                 style={{
                   color: palette.text,
                   backgroundColor: isDarkMode ? palette.surface : '#fff',
                   boxShadow: isDarkMode ? '0 2px 8px #0004' : '0 2px 8px #0001',
-                  minWidth: 200,
+                  minWidth: 120,
                   paddingRight: 32,
-                  // Custom focus border using palette
                   '--tw-ring-color': isDarkMode ? palette.primary : palette.primary,
-                  '--tw-ring-offset-color': isDarkMode ? palette.surface : '#fff'
+                  '--tw-ring-offset-color': isDarkMode ? palette.surface : '#fff',
+                  fontSize: '12px'
                 }}
               >
                 <option value="recruiter" style={{background: isDarkMode ? palette.surface : '#fff', color: palette.text}}>👔 Recruiter Mode</option>
@@ -699,41 +702,72 @@ const App = () => {
                 <option value="guest" style={{background: isDarkMode ? palette.surface : '#fff', color: palette.text}}>👋 Guest Mode</option>
               </select>
             </div>
-            <div className="hidden md:flex space-x-12">
-              {['home', 'about', 'skills', 'projects', 'contact'].map(section => {
-                if (currentMode === 'guest' && section === 'skills') {
-                  return (
-                    <button
-                      key="resume"
-                      onClick={() => window.open('/resume.pdf', '_blank')}
-                      className="text-sm font-light uppercase tracking-wider transition-all duration-300"
-                      style={{color: palette.primary}}
-                    >
-                      Resume
-                    </button>
-                  );
-                }
+            {/* Mobile menu icon */}
+            <button className="md:hidden ml-4" onClick={() => setShowMobileNav(v => !v)} aria-label="Open navigation">
+              <svg width="28" height="28" fill="none" stroke={palette.text} strokeWidth="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+          </div>
+          {/* Desktop nav */}
+          <div className="hidden md:flex space-x-12">
+            {['home', 'about', 'skills', 'projects', 'contact'].map(section => {
+              if (currentMode === 'guest' && section === 'skills') {
                 return (
                   <button
-                    key={section}
-                    onClick={() => scrollToSection(section)}
-                    className={`text-sm font-light uppercase tracking-wider transition-all duration-300 ${
-                      activeSection === section 
-                        ? 'border-b' 
-                        : 'hover:opacity-70'
-                    }`}
-                    style={{
-                      color: activeSection === section ? palette.text : palette.primary,
-                      borderColor: activeSection === section ? palette.text : 'transparent'
-                    }}
+                    key="resume"
+                    onClick={() => window.open('/resume.pdf', '_blank')}
+                    className="text-xs md:text-sm font-light uppercase tracking-wider transition-all duration-300"
+                    style={{color: palette.primary}}
                   >
-                    {section}
+                    Resume
                   </button>
                 );
-              })}
-            </div>
+              }
+              return (
+                <button
+                  key={section}
+                  onClick={() => scrollToSection(section)}
+                  className={`text-xs md:text-sm font-light uppercase tracking-wider transition-all duration-300 ${
+                    activeSection === section 
+                      ? 'border-b' 
+                      : 'hover:opacity-70'
+                  }`}
+                  style={{
+                    color: activeSection === section ? palette.text : palette.primary,
+                    borderColor: activeSection === section ? palette.text : 'transparent',
+                    fontSize: '12px'
+                  }}
+                >
+                  {section}
+                </button>
+              );
+            })}
           </div>
         </div>
+        {/* Mobile nav side drawer */}
+        {showMobileNav && (
+          <>
+            {/* Blurred overlay */}
+            <div className="fixed inset-0 z-40 backdrop-blur-md bg-black/30"></div>
+            <div className="fixed inset-0 z-50 bg-white dark:bg-gray-900 shadow-lg flex flex-col p-8 gap-6" style={{backgroundColor: isDarkMode ? '#18181b' : '#fff', opacity: 1}}>
+              <div className="flex justify-end mb-8">
+                <button onClick={() => setShowMobileNav(false)} aria-label="Close navigation">
+                  <svg width="28" height="28" fill="none" stroke={palette.text} strokeWidth="2" viewBox="0 0 24 24"><path d="M6 6l12 12M6 18L18 6"/></svg>
+                </button>
+              </div>
+              <div className="flex flex-col items-center justify-center flex-1 gap-6">
+                {['home', 'about', 'skills', 'projects', 'contact'].map(section => (
+                  <button
+                    key={section}
+                    onClick={() => { setShowMobileNav(false); scrollToSection(section); }}
+                    className={`text-lg font-light uppercase tracking-wider py-2 text-center w-full ${activeSection === section ? 'font-bold' : ''}`}
+                    style={{color: palette.text, fontSize: '14px'}}>
+                    {section}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </nav>
 
       {/* Hero Section */}
@@ -965,17 +999,17 @@ const App = () => {
           <h2 className="text-4xl font-extralight mb-12" style={{color: isDarkMode ? '#222' : palette.text}}>
             Clients I've Worked With
           </h2>
-          <div className="flex flex-col md:flex-row justify-center items-center gap-16">
-            <div className="flex flex-col items-center w-full md:w-1/3">
-              <img src={blastImg} alt="BLAST" className="h-28 w-auto object-contain mb-4" style={{background: 'none'}} />
+          <div className="flex flex-row flex-wrap justify-center items-center gap-8 md:gap-16">
+            <div className="flex flex-col items-center w-1/2 md:w-1/3">
+              <img src={blastImg} alt="BLAST" className="h-32 w-auto object-contain mb-4" style={{background: 'none'}} />
               <span className="text-base font-light" style={{color: isDarkMode ? '#222' : palette.primary}}>BLAST</span>
             </div>
-            <div className="flex flex-col items-center w-full md:w-1/3">
-              <img src={perfectusImg} alt="PERFECTUS" className="h-28 w-auto object-contain mb-4" style={{background: 'none'}} />
+            <div className="flex flex-col items-center w-1/2 md:w-1/3">
+              <img src={perfectusImg} alt="PERFECTUS" className="h-32 w-auto object-contain mb-4" style={{background: 'none'}} />
               <span className="text-base font-light" style={{color: isDarkMode ? '#222' : palette.primary}}>PERFECTUS</span>
             </div>
-            <div className="flex flex-col items-center w-full md:w-1/3">
-              <img src={foundryImg} alt="Foundry Invest" className="h-28 w-auto object-contain mb-4" style={{background: 'none'}} />
+            <div className="flex flex-col items-center w-1/2 md:w-1/3">
+              <img src={foundryImg} alt="Foundry Invest" className="h-32 w-auto object-contain mb-4" style={{background: 'none'}} />
               <span className="text-base font-light" style={{color: isDarkMode ? '#222' : palette.primary}}>Foundry Invest</span>
             </div>
           </div>
