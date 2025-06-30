@@ -467,8 +467,6 @@ const App = () => {
 
   const ProjectModal = ({ project, onClose }) => {
     if (!project) return null;
-    const isAgentProject = project.title.toLowerCase().includes('agent') || project.title.toLowerCase().includes('email manager');
-
     // Scroll to project card by title
     const scrollToProjectCard = () => {
       onClose();
@@ -482,6 +480,14 @@ const App = () => {
         }
       }, 300);
     };
+
+    // Show Overview of Work button for agent projects (last two)
+    const isAgentProject = project.title.toLowerCase().includes('agent') || project.title.toLowerCase().includes('email manager');
+    const overviewLink = project.title.toLowerCase().includes('agent')
+      ? 'https://drive.google.com/file/d/1CWsXGG8csezq_79NSd2ilkcdV9xdSy3U/view'
+      : project.title.toLowerCase().includes('email manager')
+        ? 'https://drive.google.com/file/d/1q1p9zxCfrd_76t6TxMX0Rct7NXUzx10-/view'
+        : null;
 
     return (
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 md:p-4">
@@ -557,12 +563,10 @@ const App = () => {
                 </div>
               </div>
               {/* Modal action buttons at the bottom */}
-              {isAgentProject && (
+              {isAgentProject && overviewLink && (
                 <div className="flex gap-6 pt-6 justify-end">
                   <a
-                    href={project.title.toLowerCase().includes('agent') 
-                      ? 'https://drive.google.com/file/d/1CWsXGG8csezq_79NSd2ilkcdV9xdSy3U/view' 
-                      : 'https://drive.google.com/file/d/1q1p9zxCfrd_76t6TxMX0Rct7NXUzx10-/view'}
+                    href={overviewLink}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-8 py-3 text-sm font-light border hover:bg-gray-900 hover:text-white transition-all duration-300 rounded-none"
