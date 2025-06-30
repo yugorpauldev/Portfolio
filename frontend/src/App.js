@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import gmailDashboardImg from './assets/gmail-image.jpg';
+import certificateImg from './assets/certificate.png';
+import blastImg from './assets/blast.png';
+import perfectusImg from './assets/perfectus.png';
+import foundryImg from './assets/foundry-logo.png';
 
 const App = () => {
   const [isVisible, setIsVisible] = useState({});
@@ -215,7 +220,7 @@ const App = () => {
       icon: (
         <svg viewBox="0 0 48 48" className="w-10 h-10">
           <path fill="#F4511E" d="M42.2,22.1L25.9,5.8C25.4,5.3,24.7,5,24,5c0,0,0,0,0,0c-0.7,0-1.4,0.3-1.9,0.8L5.8,22.1 C5.3,22.6,5,23.3,5,24c0,0.7,0.3,1.4,0.8,1.9l16.3,16.3c0,0,0,0,0,0c0.5,0.5,1.2,0.8,1.9,0.8s1.4-0.3,1.9-0.8L42.2,25.9 c0.5-0.5,0.8-1.2,0.8-1.9C43,23.3,42.7,22.6,42.2,22.1z"/>
-          <path fill="#fff" d="M24 7c0.6 0 1.2 0.2 1.6 0.7L40.3 22.4c0.4 0.4 0.7 1 0.7 1.6s-0.2 1.2-0.7 1.6L25.6 40.3c-0.4 0.4-1 0.7-1.6 0.7s-1.2-0.2-1.6-0.7L7.7 25.6C7.2 25.2 7 24.6 7 24s0.2-1.2 0.7-1.6L22.4 7.7C22.8 7.2 23.4 7 24 7M24 5c-0.7 0-1.4 0.3-1.9 0.8L5.8 22.1C5.3 22.6 5 23.3 5 24c0 0.7 0.3 1.4 0.8 1.9l16.3 16.3c0.5 0.5 1.2 0.8 1.9 0.8s1.4-0.3 1.9-0.8l16.3-16.3c0.5-0.5 0.8-1.2 0.8-1.9c0-0.7-0.3-1.4-0.8-1.9L25.9 5.8C25.4 5.3 24.7 5 24 5L24 5z"/>
+          <path fill="#fff" d="M24 7c0.6 0 1.2 0.2 1.6 0.7L40.3 22.4c0.4 0.4 0.7 1 0.7 1.6s-0.2 1.2-0.7 1.6L25.6 40.3c-0.4 0.4-1 0.7-1.6 0.7s-1.2-0.2-1.6-0.7L7.7 25.6C7.2 25.2 7 24.6 7 24s0.2-1.2 0.7-1.6L22.4 7.7C22.8 7.2 23.4 7 24 7L24 7z"/>
         </svg>
       )
     },
@@ -229,11 +234,21 @@ const App = () => {
       )
     },
     {
-      name: 'Statistics',
+      name: 'n8n',
       icon: (
         <svg viewBox="0 0 48 48" className="w-10 h-10">
-          <path fill="#37474f" d="M40,40H8c-2.2,0-4-1.8-4-4V8c0-2.2,1.8-4,4-4h32c2.2,0,4,1.8,4,4v28C44,38.2,42.2,40,40,40z"/>
-          <path fill="#fff" d="M12,32V16h4v16H12z M20,32V12h4v20H20z M28,32V20h4v12H28z M36,32V24h4v8H36z"/>
+          <circle cx="24" cy="24" r="22" fill="#fff"/>
+          <g filter="url(#n8n-shadow)">
+            <path d="M24 8a16 16 0 1 1 0 32a16 16 0 1 1 0-32zm0 2a14 14 0 1 0 0 28a14 14 0 1 0 0-28z" fill="#F37C1B"/>
+            <circle cx="24" cy="24" r="7" fill="#F37C1B"/>
+            <circle cx="24" cy="24" r="4" fill="#fff"/>
+            <circle cx="24" cy="24" r="2" fill="#F37C1B"/>
+          </g>
+          <defs>
+            <filter id="n8n-shadow" x="0" y="0" width="48" height="48" filterUnits="userSpaceOnUse">
+              <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.08"/>
+            </filter>
+          </defs>
         </svg>
       )
     },
@@ -349,6 +364,82 @@ const App = () => {
         image: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
         github: 'https://github.com/yugorpaulo/bioeng-analytics',
         demo: 'https://bioanalytics.yugorpaulo.dev'
+      },
+      {
+        id: 3,
+        title: 'Agent for HR Outsourcing Company',
+        shortDescription: currentMode === 'developer'
+          ? 'AI-powered n8n automation for HR: integrates Google Calendar, Sheets, Gmail, and GPT-4 to fully automate interview scheduling and candidate communication.'
+          : 'AI agent that automates interview scheduling and candidate communication for HR teams using Google and OpenAI services.',
+        fullDescription: 'An intelligent automation agent designed for HR outsourcing companies to streamline interview scheduling and candidate communication. Integrates Google Calendar, Google Sheets, Gmail, and GPT-4 to automate the entire process, from reading candidate data to sending personalized interview invites.',
+        implementation: {
+          overview: currentMode === 'developer'
+            ? 'Developed an n8n workflow that monitors a Google Sheet for new candidate entries, selects the next available interview slot (Mon/Wed/Fri at 3 PM), creates a Google Calendar invite, and uses GPT-4 to generate and send a personalized email via Gmail. The workflow ensures no same-day interviews, handles time zone conflicts, and maintains professional communication.'
+            : 'Automates interview scheduling and email communication for HR teams by integrating Google Calendar, Sheets, Gmail, and GPT-4 in a single n8n workflow.',
+          keyFeatures: [
+            'Monitors a Google Sheet for new candidate entries every minute',
+            'Auto-selects the next available interview slot (Mon/Wed/Fri at 3 PM)',
+            'Creates a calendar invite in Google Calendar',
+            'Uses GPT-4 to generate personalized emails based on candidate data',
+            'Sends the email invite with the interview link via Gmail',
+            'Prevents same-day interviews',
+            'Ensures AI-generated emails are concise, polite, and professionally formatted',
+            'Keeps scheduling conflict-free and easy to manage'
+          ],
+          technicalChallenges: [
+            'Integrating Google Calendar, Google Sheets, and Gmail APIs with n8n',
+            'Prompt engineering for GPT-4 to generate professional emails',
+            'Handling OAuth2 authentication for Google services',
+            'Ensuring robust error handling and retry logic in automation',
+            'Managing time zone conversions and calendar conflicts'
+          ],
+          deployment: currentMode === 'developer'
+            ? 'Requires Google Calendar API credentials, a Google Sheet with candidate info (Name, Email, Background), a Gmail account with OAuth2, and Azure OpenAI API (GPT-4o recommended).'
+            : 'Requires Google and OpenAI API credentials and a candidate spreadsheet.'
+        },
+        technologies: ['n8n', 'Google Calendar API', 'Google Sheets API', 'Gmail API', 'GPT-4', 'Azure OpenAI'],
+        image: 'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg',
+        github: '',
+        demo: ''
+      },
+      {
+        id: 4,
+        title: 'Email Manager – Intelligent Gmail Classification',
+        shortDescription: currentMode === 'developer'
+          ? 'AI-powered n8n workflow for Gmail: monitors, analyzes, and classifies emails in real time using Claude Sonnet 4 and Gmail API.'
+          : 'Automation that monitors Gmail, analyzes emails with AI, and applies smart labels for better organization and prioritization.',
+        fullDescription: 'An automation flow that continuously monitors your Gmail inbox, analyzes email content and context using advanced AI, and intelligently classifies messages with appropriate labels for improved organization and prioritization.',
+        implementation: {
+          overview: currentMode === 'developer'
+            ? 'Built an n8n workflow that polls Gmail for new messages every minute, extracts full email content and metadata, analyzes sender/recipient history, and uses Claude Sonnet 4 for context-aware classification. The workflow applies smart labels (To Respond, FYI, Notification, Marketing, Meeting Update, Comment) using the Gmail API and ensures consistent, structured output for reliable automation.'
+            : 'Automatically monitors Gmail, analyzes emails with AI, and applies smart labels for better organization and prioritization.',
+          keyFeatures: [
+            'Real-time Gmail inbox monitoring and polling',
+            'Extracts full email body, headers, sender/recipient info, and metadata',
+            'Analyzes email history and conversation threads',
+            'Uses Claude Sonnet 4 for advanced content and context analysis',
+            'Detects cold vs. warm emails and intent/urgency',
+            'Automatically applies smart Gmail labels (To Respond, FYI, Notification, Marketing, Meeting Update, Comment)',
+            'Ensures consistent labeling with structured output parsing',
+            'Handles automated vs. human-sent email detection',
+            'Thread-aware conversation tracking'
+          ],
+          technicalChallenges: [
+            'Integrating Gmail API for real-time monitoring and label management',
+            'Prompt engineering for Claude Sonnet 4 to ensure accurate classification',
+            'Parsing and structuring email content and metadata',
+            'Maintaining classification accuracy across diverse email types',
+            'Handling email threading and conversation context',
+            'Ensuring reliable automation with error handling and retries'
+          ],
+          deployment: currentMode === 'developer'
+            ? 'Requires Gmail API credentials, n8n instance, Anthropic Claude API access, and configuration of label IDs for Gmail integration.'
+            : 'Requires Gmail and Anthropic Claude API credentials and n8n setup.'
+        },
+        technologies: ['n8n', 'Gmail API', 'Anthropic Claude', 'Structured Output Parser'],
+        image: gmailDashboardImg,
+        github: '',
+        demo: ''
       }
     ];
 
@@ -369,12 +460,29 @@ const App = () => {
       name: 'Stanford Data Science for Bioengineering',
       issuer: 'Stanford Data Ocean',
       icon: '🎓',
-      year: '2024'
+      year: '2025'
     }
   ];
 
   const ProjectModal = ({ project, onClose }) => {
     if (!project) return null;
+
+    // Helper to determine if project is an agent project
+    const isAgentProject = project.title.toLowerCase().includes('agent') || project.title.toLowerCase().includes('email manager');
+
+    // Scroll to project card by title
+    const scrollToProjectCard = () => {
+      onClose();
+      setTimeout(() => {
+        const cards = document.querySelectorAll('.group');
+        for (const card of cards) {
+          if (card.querySelector('h3')?.textContent === project.title) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            break;
+          }
+        }
+      }, 300);
+    };
 
     return (
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -391,24 +499,20 @@ const App = () => {
               ×
             </button>
           </div>
-          
           <div className="p-8 space-y-12">
             <img 
               src={project.image} 
               alt={project.title}
               className="w-full h-64 object-cover filter grayscale hover:grayscale-0 transition-all duration-500"
             />
-            
             <div className="space-y-8">
               <div>
                 <h3 className="text-xl font-light mb-4 border-b border-gray-100 pb-2" style={{color: palette.text}}>Overview</h3>
                 <p className="text-gray-600 leading-relaxed font-light">{project.fullDescription}</p>
               </div>
-
               <div>
                 <h3 className="text-xl font-light mb-4 border-b border-gray-100 pb-2" style={{color: palette.text}}>Implementation</h3>
                 <p className="text-gray-600 mb-6 font-light">{project.implementation.overview}</p>
-                
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
                     <h4 className="font-medium mb-3" style={{color: palette.text}}>Key Features</h4>
@@ -421,7 +525,6 @@ const App = () => {
                       ))}
                     </ul>
                   </div>
-
                   <div>
                     <h4 className="font-medium mb-3" style={{color: palette.text}}>Technical Challenges</h4>
                     <ul className="space-y-2 text-gray-600 font-light">
@@ -434,13 +537,11 @@ const App = () => {
                     </ul>
                   </div>
                 </div>
-
                 <div className="mt-8">
                   <h4 className="font-medium mb-3" style={{color: palette.text}}>Deployment</h4>
                   <p className="text-gray-600 font-light">{project.implementation.deployment}</p>
                 </div>
               </div>
-
               <div>
                 <h3 className="text-xl font-light mb-4 border-b border-gray-100 pb-2" style={{color: palette.text}}>Technologies</h3>
                 <div className="flex flex-wrap gap-3">
@@ -455,23 +556,22 @@ const App = () => {
                   ))}
                 </div>
               </div>
-
-              <div className="flex gap-6 pt-6">
-                <a 
-                  href={project.github}
-                  className="px-8 py-3 text-sm font-light border hover:bg-gray-900 hover:text-white transition-all duration-300 rounded-none"
-                  style={{color: palette.text, borderColor: palette.text}}
-                >
-                  View Source Code
-                </a>
-                <a 
-                  href={project.demo}
-                  className="px-8 py-3 text-sm font-light text-white transition-all duration-300 rounded-none"
-                  style={{backgroundColor: palette.primary, ':hover': {backgroundColor: palette.secondary}}}
-                >
-                  Live Demo
-                </a>
-              </div>
+              {/* Modal action buttons at the bottom */}
+              {isAgentProject && (
+                <div className="flex gap-6 pt-6 justify-end">
+                  <a
+                    href={project.title.toLowerCase().includes('agent') 
+                      ? 'https://drive.google.com/file/d/1CWsXGG8csezq_79NSd2ilkcdV9xdSy3U/view' 
+                      : 'https://drive.google.com/file/d/1q1p9zxCfrd_76t6TxMX0Rct7NXUzx10-/view'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-8 py-3 text-sm font-light border hover:bg-gray-900 hover:text-white transition-all duration-300 rounded-none"
+                    style={{color: palette.text, borderColor: palette.text}}
+                  >
+                    Show Overview of Work
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -521,12 +621,9 @@ const App = () => {
             {typedText}
             <span className="animate-pulse">|</span>
           </h1>
-          {/* Show the message only after typing animation is complete */}
-          {typingComplete && (
-            <p className="text-2xl md:text-3xl font-extralight mb-16 tracking-wide" style={{color: palette.primary}}>
-              Nice to meet you.
-            </p>
-          )}
+          <p className="text-2xl md:text-3xl font-extralight mb-16 tracking-wide" style={{color: palette.primary}}>
+            Nice to meet you.
+          </p>
         </div>
 
         {showModeSelection && (
@@ -657,7 +754,7 @@ const App = () => {
                 Backend Developer & Data Analyst specializing in Python, Django, and data-driven solutions
               </p>
               <button
-                onClick={() => scrollToSection('about')}
+                onClick={() => scrollToSection('projects')}
                 className="inline-block px-12 py-4 text-sm font-light border transition-all duration-300 tracking-wider uppercase rounded-none"
                 style={{
                   color: palette.text,
@@ -685,14 +782,14 @@ const App = () => {
             <div className="grid md:grid-cols-2 gap-20 items-start">
               <div className="space-y-8">
                 <p className="text-lg font-light leading-relaxed" style={{color: palette.primary}}>
-                  I'm a passionate junior backend developer and data analyst with expertise in 
-                  Python, Django, Flask, and modern mobile development with Flutter. My work combines 
-                  robust backend architecture with data-driven insights.
+                  I'm a passionate backend developer and data analyst with expertise in 
+                  Python, Django, Flask, and automation solutions. My work combines 
+                  robust backend architecture, data-driven insights, and workflow automation for business efficiency.
                 </p>
                 <p className="text-lg font-light leading-relaxed" style={{color: palette.primary}}>
                   With a Stanford certification in Data Science for Bioengineering, I bring statistical 
                   rigor and analytical thinking to software development. I specialize in building scalable 
-                  APIs, managing complex databases, and creating data analytics solutions.
+                  APIs, managing complex databases, creating data analytics solutions, and architecting automation workflows (n8n, Zapier) for end-to-end business processes.
                 </p>
 
                 <div className="grid grid-cols-1 gap-6 mt-12">
@@ -705,8 +802,8 @@ const App = () => {
                     <p className="font-light text-sm" style={{color: palette.primary}}>Statistical Analysis, Data Visualization</p>
                   </div>
                   <div className="border-l-2 pl-6" style={{borderColor: palette.accent}}>
-                    <h4 className="font-light mb-2" style={{color: palette.text}}>Mobile Development</h4>
-                    <p className="font-light text-sm" style={{color: palette.primary}}>Flutter, Cross-platform Apps</p>
+                    <h4 className="font-light mb-2" style={{color: palette.text}}>Solutions Architecture</h4>
+                    <p className="font-light text-sm" style={{color: palette.primary}}>n8n, Zapier, Automation Workflows</p>
                   </div>
                 </div>
               </div>
@@ -715,9 +812,12 @@ const App = () => {
                 <div className="border p-8" style={{borderColor: palette.accent, backgroundColor: palette.surface}}>
                   <h3 className="text-xl font-light mb-6" style={{color: palette.text}}>Certification</h3>
                   {certifications.map((cert, index) => (
-                    <div key={index} className="space-y-2">
-                      <h4 className="font-light" style={{color: palette.text}}>{cert.name}</h4>
-                      <p className="font-light text-sm" style={{color: palette.primary}}>{cert.issuer} • {cert.year}</p>
+                    <div key={index} className="space-y-2 flex items-center gap-6">
+                      <img src={certificateImg} alt="Certificate" className="w-24 h-24 object-contain" style={{background: 'none'}} />
+                      <div>
+                        <h4 className="font-light" style={{color: palette.text}}>{cert.name}</h4>
+                        <p className="font-light text-sm" style={{color: palette.primary}}>{cert.issuer} • {cert.year}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -832,11 +932,9 @@ const App = () => {
                       </div>
                     </div>
                   </div>
-                  
                   <div className="p-8">
                     <h3 className="text-2xl font-light mb-4" style={{color: palette.text}}>{project.title}</h3>
                     <p className="font-light leading-relaxed mb-6" style={{color: palette.primary}}>{project.shortDescription}</p>
-                    
                     <div className="flex flex-wrap gap-2">
                       {project.technologies.slice(0, 3).map((tech, techIndex) => (
                         <span 
@@ -861,6 +959,29 @@ const App = () => {
         </div>
       </section>
 
+      {/* Clients Section */}
+      <section className="py-24" style={{backgroundColor: isDarkMode ? '#f3f4f6' : '#fff', transition: 'background 0.3s'}}>
+        <div className="max-w-5xl mx-auto px-8 text-center">
+          <h2 className="text-4xl font-extralight mb-12" style={{color: isDarkMode ? '#222' : palette.text}}>
+            Clients I've Worked With
+          </h2>
+          <div className="flex flex-col md:flex-row justify-center items-center gap-16">
+            <div className="flex flex-col items-center w-full md:w-1/3">
+              <img src={blastImg} alt="BLAST" className="h-28 w-auto object-contain mb-4" style={{background: 'none'}} />
+              <span className="text-base font-light" style={{color: isDarkMode ? '#222' : palette.primary}}>BLAST</span>
+            </div>
+            <div className="flex flex-col items-center w-full md:w-1/3">
+              <img src={perfectusImg} alt="PERFECTUS" className="h-28 w-auto object-contain mb-4" style={{background: 'none'}} />
+              <span className="text-base font-light" style={{color: isDarkMode ? '#222' : palette.primary}}>PERFECTUS</span>
+            </div>
+            <div className="flex flex-col items-center w-full md:w-1/3">
+              <img src={foundryImg} alt="Foundry Invest" className="h-28 w-auto object-contain mb-4" style={{background: 'none'}} />
+              <span className="text-base font-light" style={{color: isDarkMode ? '#222' : palette.primary}}>Foundry Invest</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Contact Section */}
       <section id="contact" className="py-32" style={{backgroundColor: palette.surface}}>
         <div className="max-w-4xl mx-auto px-8 text-center">
@@ -877,14 +998,14 @@ const App = () => {
             
             <div className="flex justify-center gap-8">
               <a 
-                href="mailto:krismiidtv@gmail.com"
+                href="mailto:nhantumboyugor@gmail.com"
                 className="px-12 py-4 text-sm font-light border transition-all duration-300 tracking-wider uppercase rounded-none"
                 style={{color: palette.text, borderColor: palette.text}}
               >
                 Email
               </a>
               <a 
-                href="https://linkedin.com/in/krismiid"
+                href="https://www.linkedin.com/in/yugorpaul/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-12 py-4 text-sm font-light text-white transition-all duration-300 tracking-wider uppercase rounded-none"
