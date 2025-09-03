@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import WebsitesCarousel from './WebsitesCarousel';
 import './App.css';
 import gmailDashboardImg from './assets/gmail-image.jpg';
 import certificateImg from './assets/certificate.png';
 import blastImg from './assets/blast.png';
 import perfectusImg from './assets/perfectus.png';
 import foundryImg from './assets/foundry-logo.png';
+import { translations } from './translations';
 
 const App = () => {
   const [isVisible, setIsVisible] = useState({});
@@ -16,14 +18,23 @@ const App = () => {
   const [typedText, setTypedText] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showMobileNav, setShowMobileNav] = useState(false);
+  const [language, setLanguage] = useState('pt'); // Add language state
 
-  const fullText = "Hi, I'm Yugor Paulo.";
+  const t = translations[language];
+  const fullText = t.greeting;
 
   // Typing animation effect
   useEffect(() => {
-    if (currentMode) return; // Don't run if mode is already selected
+    if (currentMode) {
+      setTypedText(t.greeting);
+      return;
+    }
     
     let currentIndex = 0;
+    setTypingComplete(false);
+    setShowModeSelection(false);
+    setTypedText('');
+
     const typingInterval = setInterval(() => {
       if (currentIndex <= fullText.length) {
         setTypedText(fullText.slice(0, currentIndex));
@@ -36,7 +47,7 @@ const App = () => {
     }, 100);
 
     return () => clearInterval(typingInterval);
-  }, [currentMode]);
+  }, [currentMode, language]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -269,192 +280,381 @@ const App = () => {
   ];
 
   const getProjectsForMode = () => {
-    const baseProjects = [
-      {
-        id: 1,
-        title: 'E-Commerce API Platform',
-        shortDescription: currentMode === 'developer' 
-          ? 'Scalable REST API built with Django REST Framework, featuring JWT authentication, payment processing, and microservices architecture designed for high-traffic scenarios.'
-          : 'Scalable REST API with Django REST Framework, JWT authentication, and payment processing.',
-        fullDescription: 'A comprehensive e-commerce backend system built to handle high-traffic scenarios with robust security and performance optimization.',
-        implementation: {
-          overview: currentMode === 'developer' 
-            ? 'Built a full-featured e-commerce API using Django REST Framework with microservices architecture. The system was designed with scalability in mind, implementing domain-driven design principles and following SOLID principles. The API follows RESTful conventions and includes comprehensive OpenAPI documentation.'
-            : 'Built a full-featured e-commerce API using Django REST Framework with microservices architecture.',
-          keyFeatures: [
-            'JWT-based authentication and authorization system with refresh token rotation',
-            'RESTful API endpoints for products, orders, users, and inventory management',
-            'Integrated Stripe payment processing with comprehensive webhook handling',
-            'Redis caching layer for improved performance and session management',
-            'Celery distributed task queue for background job processing',
-            'PostgreSQL database with optimized queries, proper indexing, and query analysis',
-            ...(currentMode === 'developer' ? [
-              'Custom middleware for request/response logging and monitoring',
-              'Rate limiting implementation using Redis and sliding window algorithm',
-              'Database connection pooling and query optimization techniques',
-              'Comprehensive error handling with custom exception classes',
-              'API versioning strategy with backward compatibility support'
-            ] : [])
-          ],
-          technicalChallenges: [
-            'Implemented advanced rate limiting and API throttling for DDoS protection',
-            'Created comprehensive testing suite with 95% code coverage using pytest',
-            'Set up CI/CD pipeline with Docker containers and automated deployment',
-            'Designed scalable database schema with proper relationships and normalization',
-            ...(currentMode === 'developer' ? [
-              'Solved N+1 query problems using select_related and prefetch_related',
-              'Implemented database query optimization reducing response time by 60%',
-              'Created custom Django management commands for data migration',
-              'Built monitoring and alerting system using Prometheus and Grafana',
-              'Handled concurrent transaction issues using database-level locking'
-            ] : [])
-          ],
-          deployment: currentMode === 'developer' 
-            ? 'Deployed using Docker containers on AWS EC2 with Application Load Balancer, auto-scaling groups, and RDS for database. Implemented blue-green deployment strategy with zero downtime. Used CloudFormation for infrastructure as code and implemented comprehensive monitoring with CloudWatch metrics and alerts.'
-            : 'Deployed using Docker containers on AWS EC2 with load balancing and auto-scaling capabilities.'
+    const projectsData = {
+      en: [
+        {
+          id: 1,
+          title: 'E-Commerce API Platform',
+          shortDescription: currentMode === 'developer' 
+            ? 'Scalable REST API built with Django REST Framework, featuring JWT authentication, payment processing, and microservices architecture designed for high-traffic scenarios.'
+            : 'Scalable REST API with Django REST Framework, JWT authentication, and payment processing.',
+          fullDescription: 'A comprehensive e-commerce backend system built to handle high-traffic scenarios with robust security and performance optimization.',
+          implementation: {
+            overview: currentMode === 'developer' 
+              ? 'Built a full-featured e-commerce API using Django REST Framework with microservices architecture. The system was designed with scalability in mind, implementing domain-driven design principles and following SOLID principles. The API follows RESTful conventions and includes comprehensive OpenAPI documentation.'
+              : 'Built a full-featured e-commerce API using Django REST Framework with microservices architecture.',
+            keyFeatures: [
+              'JWT-based authentication and authorization system with refresh token rotation',
+              'RESTful API endpoints for products, orders, users, and inventory management',
+              'Integrated Stripe payment processing with comprehensive webhook handling',
+              'Redis caching layer for improved performance and session management',
+              'Celery distributed task queue for background job processing',
+              'PostgreSQL database with optimized queries, proper indexing, and query analysis',
+              ...(currentMode === 'developer' ? [
+                'Custom middleware for request/response logging and monitoring',
+                'Rate limiting implementation using Redis and sliding window algorithm',
+                'Database connection pooling and query optimization techniques',
+                'Comprehensive error handling with custom exception classes',
+                'API versioning strategy with backward compatibility support'
+              ] : [])
+            ],
+            technicalChallenges: [
+              'Implemented advanced rate limiting and API throttling for DDoS protection',
+              'Created comprehensive testing suite with 95% code coverage using pytest',
+              'Set up CI/CD pipeline with Docker containers and automated deployment',
+              'Designed scalable database schema with proper relationships and normalization',
+              ...(currentMode === 'developer' ? [
+                'Solved N+1 query problems using select_related and prefetch_related',
+                'Implemented database query optimization reducing response time by 60%',
+                'Created custom Django management commands for data migration',
+                'Built monitoring and alerting system using Prometheus and Grafana',
+                'Handled concurrent transaction issues using database-level locking'
+              ] : [])
+            ],
+            deployment: currentMode === 'developer' 
+              ? 'Deployed using Docker containers on AWS EC2 with Application Load Balancer, auto-scaling groups, and RDS for database. Implemented blue-green deployment strategy with zero downtime. Used CloudFormation for infrastructure as code and implemented comprehensive monitoring with CloudWatch metrics and alerts.'
+              : 'Deployed using Docker containers on AWS EC2 with load balancing and auto-scaling capabilities.'
+          },
+          technologies: ['Python', 'Django', 'PostgreSQL', 'Redis', 'Docker', 'AWS'],
+          image: 'https://images.pexels.com/photos/2061168/pexels-photo-2061168.jpeg',
+          github: 'https://github.com/yugorpaulo/ecommerce-api',
+          demo: 'https://api.yugorpaulo.dev/docs'
         },
-        technologies: ['Python', 'Django', 'PostgreSQL', 'Redis', 'Docker', 'AWS'],
-        image: 'https://images.pexels.com/photos/2061168/pexels-photo-2061168.jpeg',
-        github: 'https://github.com/yugorpaulo/ecommerce-api',
-        demo: 'https://api.yugorpaulo.dev/docs'
-      },
-      {
-        id: 2,
-        title: 'Bioengineering Data Analytics Platform',
-        shortDescription: currentMode === 'developer'
-          ? 'Real-time analytics platform for bioengineering data utilizing Flask, Oracle DB, advanced statistical modeling, and machine learning algorithms for predictive insights.'
-          : 'Real-time analytics platform for bioengineering data using Flask, Oracle DB, and statistical modeling.',
-        fullDescription: 'A sophisticated data analytics platform designed for bioengineering research, leveraging my Stanford Data Science certification.',
-        implementation: {
-          overview: currentMode === 'developer'
-            ? 'Developed a comprehensive analytics platform for processing and analyzing bioengineering datasets using advanced statistical methods and machine learning algorithms learned from Stanford certification. The platform processes large-scale biological datasets, performs complex statistical analysis, and provides real-time insights through interactive visualizations.'
-            : 'Developed a comprehensive analytics platform for processing and analyzing bioengineering datasets using statistical methods learned from Stanford certification.',
-          keyFeatures: [
-            'Real-time data processing pipeline with Flask and Oracle database',
-            'Statistical analysis modules using Python scientific libraries (NumPy, SciPy, Pandas)',
-            'Interactive data visualizations with Plotly, D3.js, and custom charting components',
-            'Machine learning models for predictive bioengineering insights using scikit-learn',
-            'Automated report generation with statistical significance testing',
-            'RESTful API for data ingestion, processing, and retrieval',
-            ...(currentMode === 'developer' ? [
-              'Custom ETL pipelines for processing multi-format bioengineering data',
-              'Implementation of statistical algorithms including ANOVA, regression analysis, and time-series forecasting',
-              'Real-time data streaming using WebSockets for live dashboard updates',
-              'Advanced data validation and quality assurance pipelines',
-              'Custom machine learning pipeline with feature engineering and model selection'
-            ] : [])
-          ],
-          technicalChallenges: [
-            'Implemented complex statistical algorithms for bioengineering data analysis',
-            'Optimized Oracle database queries for large-scale dataset processing',
-            'Created robust data validation and cleaning pipelines',
-            'Built responsive dashboard with real-time updates using WebSockets',
-            ...(currentMode === 'developer' ? [
-              'Solved memory optimization issues when processing datasets exceeding 100GB',
-              'Implemented parallel processing using multiprocessing and concurrent.futures',
-              'Created custom Oracle stored procedures for complex aggregation queries',
-              'Built fault-tolerant data pipeline with automatic error recovery',
-              'Optimized statistical computations reducing processing time by 75%'
-            ] : [])
-          ],
-          deployment: currentMode === 'developer'
-            ? 'Containerized with Docker and deployed on Kubernetes cluster with horizontal pod autoscaling for handling variable workloads. Implemented service mesh architecture using Istio for traffic management. Used Helm charts for application deployment and configured persistent volumes for data storage. Set up monitoring with ELK stack and implemented automated backup strategies.'
-            : 'Containerized with Docker and deployed on Kubernetes cluster with horizontal scaling for handling large datasets.'
+        {
+          id: 2,
+          title: 'Bioengineering Data Analytics Platform',
+          shortDescription: currentMode === 'developer'
+            ? 'Real-time analytics platform for bioengineering data utilizing Flask, Oracle DB, advanced statistical modeling, and machine learning algorithms for predictive insights.'
+            : 'Real-time analytics platform for bioengineering data using Flask, Oracle DB, and statistical modeling.',
+          fullDescription: 'A sophisticated data analytics platform designed for bioengineering research, leveraging my Stanford Data Science certification.',
+          implementation: {
+            overview: currentMode === 'developer'
+              ? 'Developed a comprehensive analytics platform for processing and analyzing bioengineering datasets using advanced statistical methods and machine learning algorithms learned from Stanford certification. The platform processes large-scale biological datasets, performs complex statistical analysis, and provides real-time insights through interactive visualizations.'
+              : 'Developed a comprehensive analytics platform for processing and analyzing bioengineering datasets using statistical methods learned from Stanford certification.',
+            keyFeatures: [
+              'Real-time data processing pipeline with Flask and Oracle database',
+              'Statistical analysis modules using Python scientific libraries (NumPy, SciPy, Pandas)',
+              'Interactive data visualizations with Plotly, D3.js, and custom charting components',
+              'Machine learning models for predictive bioengineering insights using scikit-learn',
+              'Automated report generation with statistical significance testing',
+              'RESTful API for data ingestion, processing, and retrieval',
+              ...(currentMode === 'developer' ? [
+                'Custom ETL pipelines for processing multi-format bioengineering data',
+                'Implementation of statistical algorithms including ANOVA, regression analysis, and time-series forecasting',
+                'Real-time data streaming using WebSockets for live dashboard updates',
+                'Advanced data validation and quality assurance pipelines',
+                'Custom machine learning pipeline with feature engineering and model selection'
+              ] : [])
+            ],
+            technicalChallenges: [
+              'Implemented complex statistical algorithms for bioengineering data analysis',
+              'Optimized Oracle database queries for large-scale dataset processing',
+              'Created robust data validation and cleaning pipelines',
+              'Built responsive dashboard with real-time updates using WebSockets',
+              ...(currentMode === 'developer' ? [
+                'Solved memory optimization issues when processing datasets exceeding 100GB',
+                'Implemented parallel processing using multiprocessing and concurrent.futures',
+                'Created custom Oracle stored procedures for complex aggregation queries',
+                'Built fault-tolerant data pipeline with automatic error recovery',
+                'Optimized statistical computations reducing processing time by 75%'
+              ] : [])
+            ],
+            deployment: currentMode === 'developer'
+              ? 'Containerized with Docker and deployed on Kubernetes cluster with horizontal pod autoscaling for handling variable workloads. Implemented service mesh architecture using Istio for traffic management. Used Helm charts for application deployment and configured persistent volumes for data storage. Set up monitoring with ELK stack and implemented automated backup strategies.'
+              : 'Containerizado com Docker e implantado em cluster Kubernetes com escalonamento horizontal para lidar com grandes conjuntos de dados.'
+          },
+          technologies: ['Python', 'Flask', 'Oracle', 'Pandas', 'NumPy', 'Plotly', 'Kubernetes'],
+          image: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
+          github: 'https://github.com/yugorpaulo/bioeng-analytics',
+          demo: 'https://bioanalytics.yugorpaulo.dev'
         },
-        technologies: ['Python', 'Flask', 'Oracle', 'Pandas', 'NumPy', 'Plotly', 'Kubernetes'],
-        image: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
-        github: 'https://github.com/yugorpaulo/bioeng-analytics',
-        demo: 'https://bioanalytics.yugorpaulo.dev'
-      },
-      {
-        id: 3,
-        title: 'Agent for HR Outsourcing Company',
-        shortDescription: currentMode === 'developer'
-          ? 'AI-powered n8n automation for HR: integrates Google Calendar, Sheets, Gmail, and GPT-4 to fully automate interview scheduling and candidate communication.'
-          : 'AI agent that automates interview scheduling and candidate communication for HR teams using Google and OpenAI services.',
-        fullDescription: 'An intelligent automation agent designed for HR outsourcing companies to streamline interview scheduling and candidate communication. Integrates Google Calendar, Google Sheets, Gmail, and GPT-4 to automate the entire process, from reading candidate data to sending personalized interview invites.',
-        implementation: {
-          overview: currentMode === 'developer'
-            ? 'Developed an n8n workflow that monitors a Google Sheet for new candidate entries, selects the next available interview slot (Mon/Wed/Fri at 3 PM), creates a Google Calendar invite, and uses GPT-4 to generate and send a personalized email via Gmail. The workflow ensures no same-day interviews, handles time zone conflicts, and maintains professional communication.'
-            : 'Automates interview scheduling and email communication for HR teams by integrating Google Calendar, Sheets, Gmail, and GPT-4 in a single n8n workflow.',
-          keyFeatures: [
-            'Monitors a Google Sheet for new candidate entries every minute',
-            'Auto-selects the next available interview slot (Mon/Wed/Fri at 3 PM)',
-            'Creates a calendar invite in Google Calendar',
-            'Uses GPT-4 to generate personalized emails based on candidate data',
-            'Sends the email invite with the interview link via Gmail',
-            'Prevents same-day interviews',
-            'Ensures AI-generated emails are concise, polite, and professionally formatted',
-            'Keeps scheduling conflict-free and easy to manage'
-          ],
-          technicalChallenges: [
-            'Integrating Google Calendar, Google Sheets, and Gmail APIs with n8n',
-            'Prompt engineering for GPT-4 to generate professional emails',
-            'Handling OAuth2 authentication for Google services',
-            'Ensuring robust error handling and retry logic in automation',
-            'Managing time zone conversions and calendar conflicts'
-          ],
-          deployment: currentMode === 'developer'
-            ? 'Requires Google Calendar API credentials, a Google Sheet with candidate info (Name, Email, Background), a Gmail account with OAuth2, and Azure OpenAI API (GPT-4o recommended).'
-            : 'Requires Google and OpenAI API credentials and a candidate spreadsheet.'
+        {
+          id: 3,
+          title: 'Agent for HR Outsourcing Company',
+          shortDescription: currentMode === 'developer'
+            ? 'AI-powered n8n automation for HR: integrates Google Calendar, Sheets, Gmail, and GPT-4 to fully automate interview scheduling and candidate communication.'
+            : 'AI agent that automates interview scheduling and candidate communication for HR teams using Google and OpenAI services.',
+          fullDescription: 'An intelligent automation agent designed for HR outsourcing companies to streamline interview scheduling and candidate communication. Integrates Google Calendar, Google Sheets, Gmail, and GPT-4 to automate the entire process, from reading candidate data to sending personalized interview invites.',
+          implementation: {
+            overview: currentMode === 'developer'
+              ? 'Developed an n8n workflow that monitors a Google Sheet for new candidate entries, selects the next available interview slot (Mon/Wed/Fri at 3 PM), creates a Google Calendar invite, and uses GPT-4 to generate and send a personalized email via Gmail. The workflow ensures no same-day interviews, handles time zone conflicts, and maintains professional communication.'
+              : 'Automates interview scheduling and email communication for HR teams by integrating Google Calendar, Sheets, Gmail, and GPT-4 in a single n8n workflow.',
+            keyFeatures: [
+              'Monitors a Google Sheet for new candidate entries every minute',
+              'Auto-selects the next available interview slot (Mon/Wed/Fri at 3 PM)',
+              'Creates a calendar invite in Google Calendar',
+              'Uses GPT-4 to generate personalized emails based on candidate data',
+              'Sends the email invite with the interview link via Gmail',
+              'Prevents same-day interviews',
+              'Ensures AI-generated emails are concise, polite, and professionally formatted',
+              'Keeps scheduling conflict-free and easy to manage'
+            ],
+            technicalChallenges: [
+              'Integrating Google Calendar, Google Sheets, and Gmail APIs with n8n',
+              'Prompt engineering for GPT-4 to generate professional emails',
+              'Handling OAuth2 authentication for Google services',
+              'Ensuring robust error handling and retry logic in automation',
+              'Managing time zone conversions and calendar conflicts'
+            ],
+            deployment: currentMode === 'developer'
+              ? 'Requires Google Calendar API credentials, a Google Sheet with candidate info (Name, Email, Background), a Gmail account with OAuth2, and Azure OpenAI API (GPT-4o recommended).'
+              : 'Requires Google and OpenAI API credentials and a candidate spreadsheet.'
+          },
+          technologies: ['n8n', 'Google Calendar API', 'Google Sheets API', 'Gmail API', 'Azure OpenAI API'],
+          image: 'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg',
+          github: '',
+          demo: ''
         },
-        technologies: ['n8n', 'Google Calendar API', 'Google Sheets API', 'Gmail API', 'Azure OpenAI API'],
-        image: 'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg',
-        github: '',
-        demo: ''
-      },
-      {
-        id: 4,
-        title: 'Email Manager – Intelligent Gmail Classification',
-        shortDescription: currentMode === 'developer'
-          ? 'AI-powered n8n workflow for Gmail: monitors, analyzes, and classifies emails in real time using Claude Sonnet 4 and Gmail API.'
-          : 'Automation that monitors Gmail, analyzes emails with AI, and applies smart labels for better organization and prioritization.',
-        fullDescription: 'An automation flow that continuously monitors your Gmail inbox, analyzes email content and context using advanced AI, and intelligently classifies messages with appropriate labels for improved organization and prioritization.',
-        implementation: {
-          overview: currentMode === 'developer'
-            ? 'Built an n8n workflow that polls Gmail for new messages every minute, extracts full email content and metadata, analyzes sender/recipient history, and uses Claude Sonnet 4 for context-aware classification. The workflow applies smart labels (To Respond, FYI, Notification, Marketing, Meeting Update, Comment) using the Gmail API and ensures consistent, structured output for reliable automation.'
-            : 'Automatically monitors Gmail, analyzes emails with AI, and applies smart labels for better organization and prioritization.',
-          keyFeatures: [
-            'Real-time Gmail inbox monitoring and polling',
-            'Extracts full email body, headers, sender/recipient info, and metadata',
-            'Analyzes email history and conversation threads',
-            'Uses Claude Sonnet 4 for advanced content and context analysis',
-            'Detects cold vs. warm emails and intent/urgency',
-            'Automatically applies smart Gmail labels (To Respond, FYI, Notification, Marketing, Meeting Update, Comment)',
-            'Ensures consistent labeling with structured output parsing',
-            'Handles automated vs. human-sent email detection',
-            'Thread-aware conversation tracking'
-          ],
-          technicalChallenges: [
-            'Integrating Gmail API for real-time monitoring and label management',
-            'Prompt engineering for Claude Sonnet 4 to ensure accurate classification',
-            'Parsing and structuring email content and metadata',
-            'Maintaining classification accuracy across diverse email types',
-            'Handling email threading and conversation context',
-            'Ensuring reliable automation with error handling and retries'
-          ],
-          deployment: currentMode === 'developer'
-            ? 'Requires Gmail API credentials, n8n instance, Anthropic Claude API access, and configuration of label IDs for Gmail integration.'
-            : 'Requires Gmail and Anthropic Claude API credentials and n8n setup.'
+        {
+          id: 4,
+          title: 'Email Manager – Intelligent Gmail Classification',
+          shortDescription: currentMode === 'developer'
+            ? 'AI-powered n8n workflow for Gmail: monitors, analyzes, and classifies emails in real time using Claude Sonnet 4 and Gmail API.'
+            : 'Automation that monitors Gmail, analyzes emails with AI, and applies smart labels for better organization and prioritization.',
+          fullDescription: 'An automation flow that continuously monitors your Gmail inbox, analyzes email content and context using advanced AI, and intelligently classifies messages with appropriate labels for improved organization and prioritization.',
+          implementation: {
+            overview: currentMode === 'developer'
+              ? 'Built an n8n workflow that polls Gmail for new messages every minute, extracts full email content and metadata, analyzes sender/recipient history, and uses Claude Sonnet 4 for context-aware classification. The workflow applies smart labels (To Respond, FYI, Notification, Marketing, Meeting Update, Comment) using the Gmail API and ensures consistent, structured output for reliable automation.'
+              : 'Automatically monitors Gmail, analyzes emails with AI, and applies smart labels for better organization and prioritization.',
+            keyFeatures: [
+              'Real-time Gmail inbox monitoring and polling',
+              'Extracts full email body, headers, sender/recipient info, and metadata',
+              'Analyses email history and conversation threads',
+              'Uses Claude Sonnet 4 for advanced content and context analysis',
+              'Detects cold vs. warm emails and intent/urgency',
+              'Automatically applies smart Gmail labels (To Respond, FYI, Notification, Marketing, Meeting Update, Comment)',
+              'Ensures consistent labeling with structured output parsing',
+              'Handles automated vs. human-sent email detection',
+              'Thread-aware conversation tracking'
+            ],
+            technicalChallenges: [
+              'Integrating Gmail API for real-time monitoring and label management',
+              'Prompt engineering for Claude Sonnet 4 to ensure accurate classification',
+              'Parsing and structuring email content and metadata',
+              'Maintaining classification accuracy across diverse email types',
+              'Handling email threading and conversation context',
+              'Ensuring reliable automation with error handling and retries'
+            ],
+            deployment: currentMode === 'developer'
+              ? 'Requires Gmail API credentials, n8n instance, Anthropic Claude API access, and configuration of label IDs for Gmail integration.'
+              : 'Requires Gmail and Anthropic Claude API credentials and n8n setup.'
+          },
+          technologies: ['n8n', 'Gmail API', 'Anthropic Claude', 'Structured Output Parser'],
+          image: gmailDashboardImg,
+          github: '',
+          demo: ''
+        }
+      ],
+      pt: [
+        {
+          id: 1,
+          title: 'Plataforma de API para E-Commerce',
+          shortDescription: currentMode === 'developer'
+            ? 'API REST escalável construída com Django REST Framework, com autenticação JWT, processamento de pagamentos e arquitetura de microsserviços projetada para cenários de alto tráfego.'
+            : 'API REST escalável com Django REST Framework, autenticação JWT e processamento de pagamentos.',
+          fullDescription: 'Um sistema de backend de e-commerce abrangente, construído para lidar com cenários de alto tráfego com segurança robusta e otimização de desempenho.',
+          implementation: {
+            overview: currentMode === 'developer'
+              ? 'Construí uma API de e-commerce completa usando Django REST Framework com arquitetura de microsserviços. O sistema foi projetado com escalabilidade em mente, implementando princípios de domain-driven design e seguindo os princípios SOLID. A API segue as convenções RESTful e inclui documentação OpenAPI abrangente.'
+              : 'Construí uma API de e-commerce completa usando Django REST Framework com arquitetura de microsserviços.',
+            keyFeatures: [
+              'Sistema de autenticação e autorização baseado em JWT com rotação de refresh token',
+              'Endpoints de API RESTful para produtos, pedidos, usuários e gerenciamento de inventário',
+              'Processamento de pagamento Stripe integrado com manuseio abrangente de webhooks',
+              'Camada de cache Redis para melhor desempenho e gerenciamento de sessão',
+              'Fila de tarefas distribuídas Celery para processamento de trabalhos em segundo plano',
+              'Banco de dados PostgreSQL com consultas otimizadas, indexação adequada e análise de consultas',
+              ...(currentMode === 'developer' ? [
+                'Middleware personalizado para registro e monitoramento de requisições/respostas',
+                'Implementação de limitação de taxa usando Redis e algoritmo de janela deslizante',
+                'Técnicas de pooling de conexão de banco de dados e otimização de consultas',
+                'Tratamento de erros abrangente com classes de exceção personalizadas',
+                'Estratégia de versionamento de API com suporte à retrocompatibilidade'
+              ] : [])
+            ],
+            technicalChallenges: [
+              'Implementação de limitação de taxa avançada e throttling de API para proteção contra DDoS',
+              'Criação de suíte de testes abrangente com 95% de cobertura de código usando pytest',
+              'Configuração de pipeline de CI/CD com contêineres Docker e implantação automatizada',
+              'Projetado esquema de banco de dados escalável com relacionamentos e normalização adequados',
+              ...(currentMode === 'developer' ? [
+                'Resolvidos problemas de consulta N+1 usando select_related e prefetch_related',
+                'Implementada otimização de consulta de banco de dados, reduzindo o tempo de resposta em 60%',
+                'Criados comandos de gerenciamento Django personalizados para migração de dados',
+                'Construído sistema de monitoramento e alerta usando Prometheus e Grafana',
+                'Lidado com problemas de transação concorrente usando bloqueio em nível de banco de dados'
+              ] : [])
+            ],
+            deployment: currentMode === 'developer'
+              ? 'Implantado usando contêineres Docker no AWS EC2 com Application Load Balancer, grupos de auto-scaling e RDS para banco de dados. Implementada estratégia de implantação blue-green com zero downtime. Usado CloudFormation para infraestrutura como código e implementado monitoramento abrangente com métricas e alertas do CloudWatch.'
+              : 'Implantado usando contêineres Docker no AWS EC2 com balanceamento de carga e capacidades de auto-scaling.'
+          },
+          technologies: ['Python', 'Django', 'PostgreSQL', 'Redis', 'Docker', 'AWS'],
+          image: 'https://images.pexels.com/photos/2061168/pexels-photo-2061168.jpeg',
+          github: 'https://github.com/yugorpaulo/ecommerce-api',
+          demo: 'https://api.yugorpaulo.dev/docs'
         },
-        technologies: ['n8n', 'Gmail API', 'Anthropic Claude', 'Structured Output Parser'],
-        image: gmailDashboardImg,
-        github: '',
-        demo: ''
-      }
-    ];
+        {
+          id: 2,
+          title: 'Plataforma de Análise de Dados de Bioengenharia',
+          shortDescription: currentMode === 'developer'
+            ? 'Plataforma de análise em tempo real para dados de bioengenharia utilizando Flask, Oracle DB, modelagem estatística avançada e algoritmos de aprendizado de máquina para insights preditivos.'
+            : 'Plataforma de análise em tempo real para dados de bioengenharia usando Flask, Oracle DB e modelagem estatística.',
+          fullDescription: 'Uma sofisticada plataforma de análise de dados projetada para pesquisa em bioengenharia, aproveitando minha certificação em Ciência de Dados de Stanford.',
+          implementation: {
+            overview: currentMode === 'developer'
+              ? 'Desenvolvi uma plataforma de análise abrangente para processar e analisar conjuntos de dados de bioengenharia usando métodos estatísticos avançados e algoritmos de aprendizado de máquina aprendidos na certificação de Stanford. A plataforma processa conjuntos de dados biológicos em grande escala, realiza análises estatísticas complexas e fornece insights em tempo real através de visualizações interativas.'
+              : 'Desenvolvi uma plataforma de análise abrangente para processar e analisar conjuntos de dados de bioengenharia usando métodos estatísticos aprendidos na certificação de Stanford.',
+            keyFeatures: [
+              'Pipeline de processamento de dados em tempo real com Flask e banco de dados Oracle',
+              'Módulos de análise estatística usando bibliotecas científicas do Python (NumPy, SciPy, Pandas)',
+              'Visualizações de dados interativas com Plotly, D3.js e componentes de gráficos personalizados',
+              'Modelos de aprendizado de máquina para insights preditivos em bioengenharia usando scikit-learn',
+              'Geração automatizada de relatórios com testes de significância estatística',
+              'API RESTful para ingestão, processamento e recuperação de dados',
+              ...(currentMode === 'developer' ? [
+                'Pipelines ETL personalizados para processamento de dados de bioengenharia em múltiplos formatos',
+                'Implementação de algoritmos estatísticos, incluindo ANOVA, análise de regressão e previsão de séries temporais',
+                'Streaming de dados em tempo real usando WebSockets para atualizações de dashboard ao vivo',
+                'Pipelines avançados de validação de dados e garantia de qualidade',
+                'Pipeline de aprendizado de máquina personalizado com engenharia de recursos e seleção de modelo'
+              ] : [])
+            ],
+            technicalChallenges: [
+              'Implementação de algoritmos estatísticos complexos para análise de dados de bioengenharia',
+              'Otimização de consultas ao banco de dados Oracle para processamento de grandes conjuntos de dados',
+              'Criação de pipelines robustos de validação e limpeza de dados',
+              'Construção de dashboard responsivo com atualizações em tempo real usando WebSockets',
+              ...(currentMode === 'developer' ? [
+                'Resolução de problemas de otimização de memória ao processar conjuntos de dados superiores a 100GB',
+                'Implementação de processamento paralelo usando multiprocessing e concurrent.futures',
+                'Criação de stored procedures Oracle personalizadas para consultas de agregação complexas',
+                'Construção de pipeline de dados tolerante a falhas com recuperação automática de erros',
+                'Otimização de cálculos estatísticos, reduzindo o tempo de processamento em 75%'
+              ] : [])
+            ],
+            deployment: currentMode === 'developer'
+              ? 'Containerizado com Docker e implantado em cluster Kubernetes com autoscaling horizontal de pods para lidar com cargas de trabalho variáveis. Implementada arquitetura de service mesh usando Istio para gerenciamento de tráfego. Usados Helm charts para implantação de aplicativos e configurados volumes persistentes para armazenamento de dados. Configurado monitoramento com stack ELK e implementadas estratégias de backup automatizadas.'
+              : 'Containerizado com Docker e implantado em cluster Kubernetes com escalonamento horizontal para lidar com grandes conjuntos de dados.'
+          },
+          technologies: ['Python', 'Flask', 'Oracle', 'Pandas', 'NumPy', 'Plotly', 'Kubernetes'],
+          image: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
+          github: 'https://github.com/yugorpaulo/bioeng-analytics',
+          demo: 'https://bioanalytics.yugorpaulo.dev'
+        },
+        {
+          id: 3,
+          title: 'Agente para Empresa de Terceirização de RH',
+          shortDescription: currentMode === 'developer'
+            ? 'Automação n8n com IA para RH: integra Google Calendar, Sheets, Gmail e GPT-4 para automatizar totalmente o agendamento de entrevistas e a comunicação com candidatos.'
+            : 'Agente de IA que automatiza o agendamento de entrevistas e a comunicação com candidatos para equipes de RH usando serviços do Google e OpenAI.',
+          fullDescription: 'Um agente de automação inteligente projetado para empresas de terceirização de RH para otimizar o agendamento de entrevistas e a comunicação com candidatos. Integra Google Calendar, Google Sheets, Gmail e GPT-4 para automatizar todo o processo, desde a leitura dos dados do candidato até o envio de convites de entrevista personalizados.',
+          implementation: {
+            overview: currentMode === 'developer'
+              ? 'Desenvolvi um fluxo de trabalho n8n que monitora uma Planilha Google para novas entradas de candidatos, seleciona o próximo horário de entrevista disponível (Seg/Qua/Sex às 15h), cria um convite no Google Calendar e usa GPT-4 para gerar e enviar um e-mail personalizado via Gmail. O fluxo de trabalho garante que não haja entrevistas no mesmo dia, lida com conflitos de fuso horário e mantém uma comunicação profissional.'
+              : 'Automatiza o agendamento de entrevistas e a comunicação por e-mail para equipes de RH, integrando Google Calendar, Sheets, Gmail e GPT-4 em um único fluxo de trabalho n8n.',
+            keyFeatures: [
+              'Monitora uma Planilha Google para novas entradas de candidatos a cada minuto',
+              'Seleciona automaticamente o próximo horário de entrevista disponível (Seg/Qua/Sex às 15h)',
+              'Cria um convite de calendário no Google Calendar',
+              'Usa GPT-4 para gerar e-mails personalizados com base nos dados do candidato',
+              'Envia o convite por e-mail com o link da entrevista via Gmail',
+              'Evita entrevistas no mesmo dia',
+              'Garante que os e-mails gerados por IA sejam concisos, educados e formatados profissionalmente',
+              'Mantém o agendamento livre de conflitos e fácil de gerenciar'
+            ],
+            technicalChallenges: [
+              'Integração das APIs do Google Calendar, Google Sheets e Gmail com n8n',
+              'Engenharia de prompt para GPT-4 para gerar e-mails profissionais',
+              'Manuseio da autenticação OAuth2 para serviços do Google',
+              'Garantir tratamento robusto de erros e lógica de repetição na automação',
+              'Gerenciamento de conversões de fuso horário e conflitos de calendário'
+            ],
+            deployment: currentMode === 'developer'
+              ? 'Requer credenciais da API do Google Calendar, uma Planilha Google com informações do candidato (Nome, E-mail, Background), uma conta do Gmail com OAuth2 e API da Azure OpenAI (GPT-4o recomendado).'
+              : 'Requer credenciais das APIs do Google e OpenAI e uma planilha de candidatos.'
+          },
+          technologies: ['n8n', 'Google Calendar API', 'Google Sheets API', 'Gmail API', 'Azure OpenAI API'],
+          image: 'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg',
+          github: '',
+          demo: ''
+        },
+        {
+          id: 4,
+          title: 'Gerenciador de E-mail – Classificação Inteligente do Gmail',
+          shortDescription: currentMode === 'developer'
+            ? 'Fluxo de trabalho n8n com IA para Gmail: monitora, analisa e classifica e-mails em tempo real usando Claude Sonnet 4 e a API do Gmail.'
+            : 'Automação que monitora o Gmail, analisa e-mails com IA e aplica rótulos inteligentes para melhor organização e priorização.',
+          fullDescription: 'Um fluxo de automação que monitora continuamente sua caixa de entrada do Gmail, analisa o conteúdo e o contexto do e-mail usando IA avançada e classifica inteligentemente as mensagens com rótulos apropriados para melhor organização e priorização.',
+          implementation: {
+            overview: currentMode === 'developer'
+              ? 'Construí um fluxo de trabalho n8n que sonda o Gmail em busca de novas mensagens a cada minuto, extrai o conteúdo completo e os metadados do e-mail, analisa o histórico de remetentes/destinatários e usa o Claude Sonnet 4 para classificação com reconhecimento de contexto. O fluxo de trabalho aplica rótulos inteligentes (Responder, FYI, Notificação, Marketing, Atualização de Reunião, Comentário) usando a API do Gmail e garante uma saída consistente e estruturada para uma automação confiável.'
+              : 'Monitora automaticamente o Gmail, analisa e-mails com IA e aplica rótulos inteligentes para melhor organização e priorização.',
+            keyFeatures: [
+              'Monitoramento e sondagem da caixa de entrada do Gmail em tempo real',
+              'Extrai corpo completo do e-mail, cabeçalhos, informações de remetente/destinatário e metadados',
+              'Analisa o histórico de e-mails e as threads de conversação',
+              'Usa Claude Sonnet 4 para análise avançada de conteúdo e contexto',
+              'Detecta e-mails frios vs. quentes e intenção/urgência',
+              'Aplica automaticamente rótulos inteligentes do Gmail (Responder, FYI, Notificação, Marketing, Atualização de Reunião, Comentário)',
+              'Garante rotulagem consistente com análise de saída estruturada',
+              'Lida com a detecção de e-mails enviados por automação vs. humanos',
+              'Rastreamento de conversas com reconhecimento de thread'
+            ],
+            technicalChallenges: [
+              'Integração da API do Gmail para monitoramento em tempo real e gerenciamento de rótulos',
+              'Engenharia de prompt para Claude Sonnet 4 para garantir classificação precisa',
+              'Análise e estruturação do conteúdo e metadados do e-mail',
+              'Manutenção da precisão da classificação em diversos tipos de e-mail',
+              'Manuseio de threading de e-mail e contexto de conversação',
+              'Garantir automação confiável com tratamento de erros e repetições'
+            ],
+            deployment: currentMode === 'developer'
+              ? 'Requer credenciais da API do Gmail, instância n8n, acesso à API Anthropic Claude e configuração de IDs de rótulo para integração com o Gmail.'
+              : 'Requer credenciais das APIs do Gmail e Anthropic Claude e configuração do n8n.'
+          },
+          technologies: ['n8n', 'Gmail API', 'Anthropic Claude', 'Structured Output Parser'],
+          image: gmailDashboardImg,
+          github: '',
+          demo: ''
+        }
+      ]
+    };
 
-    return baseProjects;
+    return projectsData[language] || [];
   };
 
-  const getSoftSkills = () => [
-    { name: 'Problem Solving', description: 'Analytical thinking and systematic approach to complex challenges' },
-    { name: 'Team Collaboration', description: 'Effective communication and coordination in cross-functional teams' },
-    { name: 'Adaptability', description: 'Quick learning and adaptation to new technologies and methodologies' },
-    { name: 'Time Management', description: 'Efficient project planning and deadline management' },
-    { name: 'Critical Thinking', description: 'Data-driven decision making and logical analysis' },
-    { name: 'Communication', description: 'Clear technical documentation and stakeholder presentation' }
-  ];
+  const getSoftSkills = () => {
+    const skills = {
+      en: [
+        { name: 'Problem Solving', description: 'Analytical thinking and systematic approach to complex challenges' },
+        { name: 'Team Collaboration', description: 'Effective communication and coordination in cross-functional teams' },
+        { name: 'Adaptability', description: 'Quick learning and adaptation to new technologies and methodologies' },
+        { name: 'Time Management', description: 'Efficient project planning and deadline management' },
+        { name: 'Critical Thinking', description: 'Data-driven decision making and logical analysis' },
+        { name: 'Communication', description: 'Clear technical documentation and stakeholder presentation' }
+      ],
+      pt: [
+        { name: 'Resolução de Problemas', description: 'Pensamento analítico e abordagem sistemática para desafios complexos' },
+        { name: 'Colaboração em Equipe', description: 'Comunicação eficaz e coordenação em equipes multifuncionais' },
+        { name: 'Adaptabilidade', description: 'Aprendizado rápido e adaptação a novas tecnologias e metodologias' },
+        { name: 'Gestão do Tempo', description: 'Planejamento eficiente de projetos e gestão de prazos' },
+        { name: 'Pensamento Crítico', description: 'Tomada de decisão baseada em dados e análise lógica' },
+        { name: 'Comunicação', description: 'Documentação técnica clara e apresentação para stakeholders' }
+      ]
+    };
+    return skills[language];
+  };
 
   const certifications = [
     {
@@ -523,15 +723,21 @@ const App = () => {
               {/* Move the project title here so it scrolls with the modal content */}
               <div>
                 <h2 className="text-2xl md:text-3xl font-light mb-2" style={{color: palette.text, transition: 'color 0.3s'}}>{project.title}</h2>
-                <h3 className="text-xl font-light mb-4 border-b border-gray-100 pb-2" style={{color: palette.text}}>Overview</h3>
+                <h3 className="text-xl font-light mb-4 border-b border-gray-100 pb-2" style={{color: palette.text}}>
+                  {language === 'pt' ? 'Visão Geral' : 'Overview'}
+                </h3>
                 <p className="text-gray-600 leading-relaxed font-light" style={{color: isDarkMode ? palette.primary : undefined}}>{project.fullDescription}</p>
               </div>
               <div>
-                <h3 className="text-xl font-light mb-4 border-b border-gray-100 pb-2" style={{color: palette.text}}>Implementation</h3>
+                <h3 className="text-xl font-light mb-4 border-b border-gray-100 pb-2" style={{color: palette.text}}>
+                  {language === 'pt' ? 'Implementação' : 'Implementation'}
+                </h3>
                 <p className="text-gray-600 mb-6 font-light" style={{color: isDarkMode ? palette.primary : undefined}}>{project.implementation.overview}</p>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
-                    <h4 className="font-medium mb-3" style={{color: palette.text}}>Key Features</h4>
+                    <h4 className="font-medium mb-3" style={{color: palette.text}}>
+                      {language === 'pt' ? 'Principais Recursos' : 'Key Features'}
+                    </h4>
                     <ul className="space-y-2 text-gray-600 font-light">
                       {project.implementation.keyFeatures.map((feature, index) => (
                         <li key={index} className="flex items-start" style={{color: isDarkMode ? palette.primary : undefined}}>
@@ -542,7 +748,9 @@ const App = () => {
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-medium mb-3" style={{color: palette.text}}>Technical Challenges</h4>
+                    <h4 className="font-medium mb-3" style={{color: palette.text}}>
+                      {language === 'pt' ? 'Desafios Técnicos' : 'Technical Challenges'}
+                    </h4>
                     <ul className="space-y-2 text-gray-600 font-light">
                       {project.implementation.technicalChallenges.map((challenge, index) => (
                         <li key={index} className="flex items-start" style={{color: isDarkMode ? palette.primary : undefined}}>
@@ -587,7 +795,7 @@ const App = () => {
                       ...(isDarkMode ? {color: palette.background} : {})
                     }}
                   >
-                    Show Overview of Work
+                    {language === 'pt' ? 'Ver Visão Geral do Trabalho' : 'Show Overview of Work'}
                   </a>
                 </div>
               )}
@@ -598,38 +806,23 @@ const App = () => {
     );
   };
 
-  const DarkModeToggle = () => (
+  const DarkModeToggle = ({ className = '' }) => (
     <button
       aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
       onClick={() => setIsDarkMode(v => !v)}
-      className={window.innerWidth <= 768 ? 'darkmode-toggle-mobile' : ''}
-      style={{
-        position: 'fixed',
-        top: 20,
-        left: 20,
-        zIndex: 100,
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        padding: 0,
-        width: window.innerWidth <= 768 ? 28 : 40,
-        height: window.innerWidth <= 768 ? 28 : 40,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
+      className={`bg-transparent border-none cursor-pointer p-0 flex items-center justify-center ${className}`}
     >
       {isDarkMode ? (
-        <svg width={window.innerWidth <= 768 ? 20 : 28} height={window.innerWidth <= 768 ? 20 : 28} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={palette.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       ) : (
-        <svg width={window.innerWidth <= 768 ? 20 : 28} height={window.innerWidth <= 768 ? 20 : 28} viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={palette.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
       )}
     </button>
   );
 
   const ModeSelector = () => (
     <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: palette.background}}>
-      <DarkModeToggle />
+      <DarkModeToggle className="fixed top-5 left-5 z-[100]" />
       <div
         className="flex flex-col items-center justify-center fixed inset-0 z-50 overflow-auto"
         style={{backgroundColor: palette.background, maxHeight: '100vh'}}
@@ -641,14 +834,14 @@ const App = () => {
               <span className="animate-pulse">|</span>
             </h1>
             <p className="text-2xl md:text-3xl font-extralight mb-16 tracking-wide" style={{color: palette.primary}}>
-              Nice to meet you.
+              {t.niceToMeetYou}
             </p>
           </div>
 
           {showModeSelection && (
             <div className="space-y-8 animate-fade-in">
               <p className="text-lg font-light mb-12" style={{color: palette.text}}>
-                I'd like to tailor your experience. You are a:
+                {language === 'pt' ? 'Gostaria de personalizar sua experiência. Você é:' : "I'd like to tailor your experience. You are a:"}
               </p>
               <div className="grid md:grid-cols-3 gap-6">
                 <button
@@ -656,24 +849,36 @@ const App = () => {
                   className="p-8 border border-gray-300 hover:border-purple-400 transition-all duration-300 group rounded-none"
                 >
                   <div className="text-4xl mb-4"></div>
-                  <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Recruiter</h3>
-                  <p className="text-sm font-light text-gray-500">Focus on skills, experience, and achievements</p>
+                  <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>
+                    {language === 'pt' ? 'Recrutador' : 'Recruiter'}
+                  </h3>
+                  <p className="text-sm font-light text-gray-500">
+                    {language === 'pt' ? 'Foco em habilidades, experiência e conquistas' : 'Focus on skills, experience, and achievements'}
+                  </p>
                 </button>
                 <button
                   onClick={() => handleModeSelection('developer')}
                   className="p-8 border border-gray-300 hover:border-purple-400 transition-all duration-300 group rounded-none"
                 >
                   <div className="text-4xl mb-4"></div>
-                  <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Developer</h3>
-                  <p className="text-sm font-light text-gray-500">Deep dive into technical implementations</p>
+                  <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>
+                    {language === 'pt' ? 'Desenvolvedor' : 'Developer'}
+                  </h3>
+                  <p className="text-sm font-light text-gray-500">
+                    {language === 'pt' ? 'Mergulho profundo nas implementações técnicas' : 'Deep dive into technical implementations'}
+                  </p>
                 </button>
                 <button
                   onClick={() => handleModeSelection('guest')}
                   className="p-8 border border-gray-300 hover:border-purple-400 transition-all duration-300 group rounded-none bg-transparent"
                 >
                   <div className="text-4xl mb-4"></div>
-                  <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>Guest</h3>
-                  <p className="text-sm font-light text-gray-500">General overview and resume access</p>
+                  <h3 className="text-xl font-light mb-2" style={{color: palette.text}}>
+                    {language === 'pt' ? 'Visitante' : 'Guest'}
+                  </h3>
+                  <p className="text-sm font-light text-gray-500">
+                    {language === 'pt' ? 'Visão geral e acesso ao currículo' : 'General overview and resume access'}
+                  </p>
                 </button>
               </div>
             </div>
@@ -689,17 +894,49 @@ const App = () => {
 
   return (
     <div className="min-h-screen" style={{backgroundColor: palette.background}}>
-      <DarkModeToggle />
       {/* Navigation */}
       <nav className="fixed top-0 w-full backdrop-blur-sm z-40 border-b" 
            style={{backgroundColor: `${palette.surface}95`, borderColor: `${palette.primary}20`}}>
-        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between">
-          <div className="flex items-center w-full md:w-auto justify-between">
-            <div className="flex items-center w-full gap-4 md:gap-0">
-              {/* Align toggles and reduce font size for mobile */}
-              <div className="mr-8 md:mr-4 flex-shrink-0 flex items-center">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center justify-between w-full md:w-auto">
+            <div className="flex items-center gap-4">
+              {/* Mobile: Hamburger + Dark Mode */}
+              <div className="md:hidden flex items-center gap-4">
+                <button 
+                  onClick={() => setShowMobileNav(v => !v)} 
+                  aria-label="Toggle navigation"
+                >
+                  <svg width="28" height="28" fill="none" stroke={palette.text} strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M4 6h16M4 12h16M4 18h16"/>
+                  </svg>
+                </button>
                 <DarkModeToggle />
               </div>
+              {/* Desktop: Dark Mode */}
+              <div className="hidden md:flex items-center mr-4">
+                <DarkModeToggle />
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="text-xs md:text-sm font-light border-none rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200"
+                style={{
+                  color: palette.text,
+                  backgroundColor: isDarkMode ? palette.surface : '#fff',
+                  boxShadow: isDarkMode ? '0 2px 8px #0004' : '0 2px 8px #0001',
+                  minWidth: 80,
+                  paddingRight: 24,
+                  '--tw-ring-color': isDarkMode ? palette.primary : palette.primary,
+                  '--tw-ring-offset-color': isDarkMode ? palette.surface : '#fff',
+                  fontSize: '12px'
+                }}
+              >
+                <option value="en" style={{background: isDarkMode ? palette.surface : '#fff', color: palette.text}}>EN</option>
+                <option value="pt" style={{background: isDarkMode ? palette.surface : '#fff', color: palette.text}}>PT</option>
+              </select>
               <select 
                 value={currentMode} 
                 onChange={(e) => setCurrentMode(e.target.value)}
@@ -720,17 +957,8 @@ const App = () => {
                 <option value="guest" style={{background: isDarkMode ? palette.surface : '#fff', color: palette.text}}>👋 Guest Mode</option>
               </select>
             </div>
-            {/* Mobile menu icon */}
-            <button 
-              className="md:hidden ml-4" 
-              onClick={() => setShowMobileNav(v => !v)} 
-              aria-label="Toggle navigation"
-            >
-              <svg width="28" height="28" fill="none" stroke={palette.text} strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M4 6h16M4 12h16M4 18h16"/>
-              </svg>
-            </button>
           </div>
+          
           {/* Desktop nav */}
           <div className="hidden md:flex space-x-12">
             {['home', 'about', 'skills', 'projects', 'contact'].map(section => {
@@ -761,7 +989,7 @@ const App = () => {
                     fontSize: '12px'
                   }}
                 >
-                  {section}
+                  {t.navigation[section]}
                 </button>
               );
             })}
@@ -795,6 +1023,7 @@ const App = () => {
               {/* Navigation Links */}
               <div className="mobile-sidebar-links">
                 {['home', 'about', 'skills', 'projects', 'contact'].map(section => (
+
                   <button
                     key={section}
                     onClick={() => {
@@ -826,13 +1055,10 @@ const App = () => {
               {typedText}
             </h1>
             <p className="text-2xl md:text-3xl font-extralight mb-16 tracking-wide" style={{color: palette.primary}}>
-              Nice to meet you.
+              {t.intro}
             </p>
             
             <div className="space-y-8">
-              <p className="text-lg font-light max-w-2xl mx-auto leading-relaxed" style={{color: palette.text}}>
-                Backend Developer & Data Analyst specializing in Python, Django, and data-driven solutions
-              </p>
               <button
                 onClick={() => scrollToSection('projects')}
                 className="inline-block px-12 py-4 text-sm font-light border transition-all duration-300 tracking-wider uppercase rounded-none"
@@ -842,12 +1068,16 @@ const App = () => {
                   ':hover': {backgroundColor: palette.text, color: palette.surface}
                 }}
               >
-                Explore Work
+                {language === 'pt' ? 'Explorar Trabalhos' : 'Explore Work'}
               </button>
             </div>
           </div>
         </div>
-      </section>
+
+  </section>
+
+  {/* Websites Carousel Section */}
+  <WebsitesCarousel palette={palette} language={language} />
 
       {/* About Section */}
       <section id="about" className="py-32" style={{backgroundColor: palette.background}}>
@@ -856,34 +1086,46 @@ const App = () => {
             isVisible.about ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
           }`}>
             <h2 className="text-5xl font-extralight mb-20 text-center" style={{color: palette.text}}>
-              About
+              {t.navigation.about}
             </h2>
             
             <div className="grid md:grid-cols-2 gap-20 items-start">
               <div className="space-y-8">
                 <p className="about-description">
-                  I'm a passionate backend developer and data analyst with expertise in 
-                  Python, Django, Flask, and automation solutions. My work combines 
-                  robust backend architecture, data-driven insights, and workflow automation for business efficiency.
+                  {language === 'pt' 
+                    ? "Sou um programador de software e web designer apaixonado com um olhar aguçado para estética e amor por criar experiências de utilizador intuitivas e envolventes. O meu trabalho concentra-se em criar websites e aplicações bonitas e responsivas que são altamente funcionais e visualmente atraentes."
+                    : "I'm a passionate software developer and web designer with a keen eye for aesthetics and a love for crafting intuitive, engaging user experiences. My work focuses on creating beautiful, responsive websites and applications that are both highly functional and visually appealing."}
                 </p>
                 <p className="about-description">
-                  With a Stanford certification in Data Science for Bioengineering, I bring statistical 
-                  rigor and analytical thinking to software development. I specialize in building scalable 
-                  APIs, managing complex databases, creating data analytics solutions, and architecting automation workflows (n8n, Zapier) for end-to-end business processes.
+                  {language === 'pt'
+                    ? "Com uma base sólida em tecnologias front-end como React e aptidão para princípios modernos de design, especializo-me em transformar problemas complexos em soluções elegantes e amigáveis ao utilizador. Gosto de dar vida a ideias, desde o conceito inicial e estruturação até ao produto final polido."
+                    : "With a strong foundation in front-end technologies like React and a knack for modern design principles, I specialize in turning complex problems into elegant, user-friendly solutions. I enjoy bringing ideas to life, from the initial concept and wireframing to the final polished product."}
                 </p>
 
                 <div className="grid grid-cols-1 gap-6 mt-12">
                   <div className="border-l-2 pl-6" style={{borderColor: palette.accent}}>
-                    <h4 className="font-light mb-2" style={{color: palette.text}}>Backend Development</h4>
-                    <p className="font-light text-sm" style={{color: palette.primary}}>API Design, Database Optimization, DevOps</p>
+                    <h4 className="font-light mb-2" style={{color: palette.text}}>
+                      {language === 'pt' ? 'Desenvolvimento Backend' : 'Backend Development'}
+                    </h4>
+                    <p className="font-light text-sm" style={{color: palette.primary}}>
+                      {language === 'pt' ? 'Design de API, Otimização de Base de Dados, DevOps' : 'API Design, Database Optimization, DevOps'}
+                    </p>
                   </div>
                   <div className="border-l-2 pl-6" style={{borderColor: palette.accent}}>
-                    <h4 className="font-light mb-2" style={{color: palette.text}}>Data Science</h4>
-                    <p className="font-light text-sm" style={{color: palette.primary}}>Statistical Analysis, Data Visualization</p>
+                    <h4 className="font-light mb-2" style={{color: palette.text}}>
+                      {language === 'pt' ? 'Ciência de Dados' : 'Data Science'}
+                    </h4>
+                    <p className="font-light text-sm" style={{color: palette.primary}}>
+                      {language === 'pt' ? 'Análise Estatística, Visualização de Dados' : 'Statistical Analysis, Data Visualization'}
+                    </p>
                   </div>
                   <div className="border-l-2 pl-6" style={{borderColor: palette.accent}}>
-                    <h4 className="font-light mb-2" style={{color: palette.text}}>Solutions Architecture</h4>
-                    <p className="font-light text-sm" style={{color: palette.primary}}>n8n, Zapier, Automation Workflows</p>
+                    <h4 className="font-light mb-2" style={{color: palette.text}}>
+                      {language === 'pt' ? 'Arquitetura de Soluções' : 'Solutions Architecture'}
+                    </h4>
+                    <p className="font-light text-sm" style={{color: palette.primary}}>
+                      {language === 'pt' ? 'n8n, Zapier, Fluxos de Automação' : 'n8n, Zapier, Automation Workflows'}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -931,13 +1173,13 @@ const App = () => {
             {currentMode === 'recruiter' ? (
               <>
                 <h2 className="text-5xl font-extralight mb-12 text-center" style={{color: palette.text}}>
-                  Skills & Competencies
+                  {t.skills}
                 </h2>
                 
                 {/* Technical Skills */}
                 <div className="mb-16">
                   <h3 className="text-2xl font-light mb-8 text-center" style={{color: palette.primary}}>
-                    Technical Skills
+                    {language === 'pt' ? 'Habilidades Técnicas' : 'Technical Skills'}
                   </h3>
                   <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
                     {technologies.map((tech, index) => (
@@ -951,7 +1193,7 @@ const App = () => {
                 {/* Soft Skills */}
                 <div>
                   <h3 className="text-2xl font-light mb-8 text-center" style={{color: palette.primary}}>
-                    Soft Skills
+                    {language === 'pt' ? 'Habilidades Comportamentais' : 'Soft Skills'}
                   </h3>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {getSoftSkills().map((skill, index) => (
@@ -966,7 +1208,7 @@ const App = () => {
             ) : (
               <>
                 <h2 className="text-5xl font-extralight mb-20 text-center" style={{color: palette.text}}>
-                  Technologies
+                  {t.technologies}
                 </h2>
                 
                 <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
@@ -989,7 +1231,7 @@ const App = () => {
             isVisible.projects ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
           }`}>
             <h2 className="text-5xl font-extralight mb-20 text-center" style={{color: palette.text}}>
-              Selected Work
+              {t.projects.title}
             </h2>
             
             <div className="grid md:grid-cols-2 gap-16">
@@ -1043,7 +1285,7 @@ const App = () => {
       <section className="py-24" style={{backgroundColor: isDarkMode ? '#f3f4f6' : '#fff', transition: 'background 0.3s'}}>
         <div className="max-w-5xl mx-auto px-8 text-center">
           <h2 className="text-4xl font-extralight mb-12" style={{color: isDarkMode ? '#222' : palette.text}}>
-            Clients I've Worked With
+            {language === 'pt' ? 'Clientes com quem trabalhei' : "Clients I've Worked With"}
           </h2>
           <div className="flex flex-row flex-wrap justify-center items-center gap-8 md:gap-16">
             <div className="flex flex-col items-center w-1/2 md:w-1/3">
@@ -1068,13 +1310,14 @@ const App = () => {
           <div className={`transform transition-all duration-1000 ${
             isVisible.contact ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
           }`}>
-            <h2 className="text-5xl font-extralight mb-8" style={{color: palette.text}}>
-              Get In Touch
-            </h2>
-            <p className="text-lg font-light mb-16 max-w-2xl mx-auto leading-relaxed" style={{color: palette.primary}}>
-              I'm always interested in new opportunities and exciting projects. 
-              Let's discuss how we can work together.
-            </p>
+              <h2 className="text-5xl font-extralight mb-8" style={{color: palette.text}}>
+                {language === 'pt' ? 'Entre em Contato' : 'Get In Touch'}
+              </h2>
+              <p className="text-lg font-light mb-16 max-w-2xl mx-auto leading-relaxed" style={{color: palette.primary}}>
+                {language === 'pt'
+                  ? 'Estou sempre interessado em novas oportunidades e projetos empolgantes. Vamos conversar sobre como podemos trabalhar juntos.'
+                  : "I'm always interested in new opportunities and exciting projects. Let's discuss how we can work together."}
+              </p>
             
             <div className="flex justify-center gap-8">
               <a 
