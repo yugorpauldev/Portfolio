@@ -74,7 +74,7 @@ const WebsitesCarousel = ({ palette, language = 'en' }) => {
               {websiteIdeas[language].map((website, index) => (
                 <div key={index} className="px-4">
                   <div className="website-frame mb-8">
-                    <img src={website.image} alt={website.title} className="w-full h-[250px] sm:h-[350px] md:h-[450px] object-cover rounded-lg" />
+                    <img src={website.image} alt={website.title} className="w-full h-auto object-contain rounded-lg" style={{ aspectRatio: '16/9' }} />
                   </div>
                   <div className="text-center max-w-2xl mx-auto">
                     <h3 className="text-2xl font-light mb-3" style={{color: palette?.text || '#222'}}>{website.title}</h3>
